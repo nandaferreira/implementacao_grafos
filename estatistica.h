@@ -1,16 +1,10 @@
-/* ESTATÍSTICAS
- Número de vértices e arestas
-• Grau de cada vértice
-• Grafo é conexo?
-• Grafo tem ciclos?
-• Grafo é direcionado?
-• Densidade do grafo
 
-*/
 #ifndef ESTATISTICA_H
 #define ESTATISTICA_H
 
 #include "grafo.h"
+#include "estatistica.h"
+#include <stdbool.h>
 
 //Estrutura para agrupar as métricas das Estatísticas do grafo
 
@@ -27,7 +21,7 @@ typedef struct{
 
 //Protótipos das funções 
 EstatisticasGrafo calcularEstatisticas(Grafo* grafo, bool ehDirecionado);
-void exibirEstatisticas(EstatisticasGrafo* est);
+void exibirRelatorioEstatisticas(Grafo* g, bool ehDirecionado);
 void liberarEstatisticas(EstatisticasGrafo* est);
 
 #endif

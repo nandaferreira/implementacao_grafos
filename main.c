@@ -1,12 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "grafo.h"
+#include "estatistica.h"
 
-int main()
+
+int main() 
 {
 
     int op = 0;
     Grafo* grafo = NULL;
+    bool ehDirecionado = false;
 
     while (op != 9)
     {
@@ -25,21 +29,25 @@ int main()
 
         switch (op)
         {
-        case 1: // funcao de carregar grafo de arquivo
-            char *arquivo;
+        case 1:{ // funcao de carregar grafo de arquivo
+            char arquivo[100];
             printf("=== Digite o nome do arquivo juntamente com sua extensão ===\n");
-            scanf("%s", arquivo);
+            scanf("%99s", arquivo);
             grafo = carrega_arquivo(arquivo);
             op = 0;
             break;
+        }
+        
 
-        case 2: // funcao de mostrar grafo
+        case 2:{ // funcao de mostrar grafo
             if(grafo == NULL){
                 printf("Erro: Nenhum grafo carregado! Primeiro escolha a opção 1.\n");
-            }
+            }else{
             mostra_grafo(grafo);
             op = 0;
+            }
             break;
+        }
 
         case 3:
         {
@@ -61,9 +69,17 @@ int main()
         {
         } // Algoritmo de menor caminho (Dijkstra)
 
-        case 8:
+        case 8: // Estatisticas do grafo
         {
-        } // Estatisticas do grafo
+            if(grafo==NULL){
+                printf("Erro: Nenhum grafo carregado!Primeiro escolha a opção 1 para carregar o grafo\n");
+            }else{
+                exibirRelatorioEstatisticas(grafo, ehDirecionado);
+            }
+            break;
+
+
+        } 
 
         case 9:
         {
@@ -71,10 +87,11 @@ int main()
             break;
         }
         }
-    }
+    } 
 
-    if(grafo != NULL){
-        free(grafo);
+    if (grafo != NULL) {
+        libera_grafo(grafo);
+        grafo = NULL;
     }
 
     return 0;

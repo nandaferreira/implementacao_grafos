@@ -1,5 +1,5 @@
 /**
- * @file Grafo.c
+ * @file grafo.c
  * @brief Arquivo .c de funcoes relacionadas a grafos
  *
  *
@@ -16,26 +16,36 @@
  * origem destino peso
  *
  */
+void adicionar_aresta(Grafo* grafo, int origem, int destino, int peso) {
+    if (grafo == NULL || origem < 0 || origem >= grafo->V || destino < 0 || destino >= grafo->V) {
+        printf("Erro! Tentativa de inserir aresta com vertice invalido (%d -> %d)\n", origem, destino);
+        return;
+    }
+    // Adiciona aresta origem -> destino
+    No* novo = (No*) malloc(sizeof(No));
+    novo->destino = destino;
+    novo->peso = peso;
+    novo->prox = grafo->lista[origem];
+    grafo->lista[origem] = novo;
+}
 
 Grafo* carrega_arquivo(char* nome_arquivo) {
     FILE *fptr = fopen(nome_arquivo, "r");
     if (fptr == NULL) {
-        printf("\nArquivo inexistente.\n");
+        printf("\nErro: Arquivo '%s' nao encontrado.\n\n", nome_arquivo);
         return NULL;
     }
 
-    printf("\nArquivo carregado.\n");
+    printf("\nArquivo carregado com sucesso.\n");
 
-    // Lê primeira linha: Vértices e Arestas
     int V, A;
     if (fscanf(fptr, "%d %d", &V, &A) != 2) {
-        printf("Erro: formato do arquivo inválido\n");
+        printf("Erro: formato do arquivo invalido\n");
         fclose(fptr);
         return NULL;
     }
 
-    // Aloca o grafo
-    Grafo* grafo = (Grafo*)malloc(sizeof(Grafo));
+    Grafo* grafo = (Grafo*) malloc(sizeof(Grafo));
     if (grafo == NULL) {
         fclose(fptr);
         return NULL;
@@ -44,7 +54,6 @@ Grafo* carrega_arquivo(char* nome_arquivo) {
     grafo->V = V;
     grafo->A = A;
     
-    // Aloca lista de adjacência
     grafo->lista = (No**) calloc(V, sizeof(No*));
     if (grafo->lista == NULL) {
         free(grafo);
@@ -52,11 +61,10 @@ Grafo* carrega_arquivo(char* nome_arquivo) {
         return NULL;
     }
 
-    // Lê as arestas
     int origem, destino, peso;
     for (int i = 0; i < A; i++) {
         if (fscanf(fptr, "%d %d %d", &origem, &destino, &peso) != 3) {
-            printf("Erro: formato de aresta inválido\n");
+            printf("Erro: formato de aresta invalido\n");
             fclose(fptr);
             libera_grafo(grafo);
             return NULL;
@@ -87,14 +95,7 @@ void libera_grafo(Grafo* grafo) {
 }
 
 
-void adicionar_aresta(Grafo* grafo, int origem, int destino, int peso) {
-    // Adiciona aresta origem -> destino
-    No* novo = (No*) malloc(sizeof(No));
-    novo->destino = destino;
-    novo->peso = peso;
-    novo->prox = grafo->lista[origem];
-    grafo->lista[origem] = novo;
-}
+
 
 void mostra_grafo(Grafo* grafo) {
     if (grafo == NULL) {
