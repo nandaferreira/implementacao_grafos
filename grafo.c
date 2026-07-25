@@ -7,7 +7,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+#include<stdbool.h>
 #include "grafo.h"
+
+#define INF INT_MAX
 // #include <string.h>
 
 /*
@@ -139,11 +143,78 @@ int ordenacao_topologica()
     printf("Ordenei topologicamente");
     return 1;
 }
+//FUNÇÃO AUXILIAR PARA ARVORE GERADORA MINIMA (PRIM)'
+int encontrarMinChave(int* chave, bool* naAVG, int V) {
+    int min = INF;
+    int min_index = -1;
 
-int arvore_minima()
+    for (int v = 0; v < V; v++) {
+        if (!naAVG[v] && chave[v] < min) {
+            min = chave[v];
+            min_index = v;
+        }
+    }
+    return min_index;
+}
+//Árvore Geradora Minima (Prim)
+void primAVG(Grafo* g, int verticeInicial)
 {
-    printf("Calculei árvore mínima - Prim");
-    return 1;
+    int V= g->V;
+
+    //Alocação  
+    int* chave= (int*) malloc(V*sizeof(int));
+    int* pai= (int*) malloc(V*sizeof(int));
+    bool* naAVG=(bool*) malloc(V*sizeof(bool));
+    //Inicialização das variáveis com valores iniciais
+    for(int i=0; i<V; i++){
+        chave[i]=INF; //Valor infinito
+        pai[i]=-1; //Sem pai
+        naAVG[i]=false; //Não está na árvore geradora mínima ainda
+    }
+    //Inicializa o vértice inicial
+    chave[verticeInicial]=0; //Custo 0 para o vértice inicial
+
+    //Laço principal do algoritmo de Prim
+
+    for(int count=0; count<V-1; count++){
+        //Seleciona o vértice com a menor chave que ainda não está na árvore
+        int u= encontrarMinChave(chave, naAVG, V);
+
+        //Trava para grafos Desconexos:
+        if((u==-1)|| (chave[u]==INF)){
+            break; //Sai do laço se não houver mais vértices acessíveis
+        }
+        naAVG[u]=true; //Marca o vértice como incluído na árvore
+
+        //Atualiza os valores das chaves e pais dos vértices vizinhos de u
+        No* p= g->lista[u];
+        while(p!=NULL){
+            int v= p->destino;
+            int peso= p->peso;
+            if(naAVG[v]==false && peso<chave[v]){
+                pai[v]=u;
+                chave[v]=peso;
+            }
+            p=p->prox;
+        }
+    }
+        //Impressão da árvore geradora mínima
+        printf("\n=== ARVORE GERADORA MINIMA (PRIM) ===\n");
+        int pesoTotal=0;
+        for(int i=0; i<V; i++){
+            if(pai[i]!=-1){
+                printf("Aresta: %d - %d, Peso: %d\n", pai[i], i, chave[i]);
+                pesoTotal+=chave[i];
+            }
+        }
+
+        printf("Peso total da Arvore geradora minima: %d\n", pesoTotal);
+        free(chave);
+        free(pai);
+        free(naAVG);
+      
+
+    
 }
 
 int menor_caminho()
