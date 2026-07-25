@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "grafo.h"
 #include "estatistica.h"
+#include "desafios.h"
 
 int main() 
 {
@@ -10,7 +11,7 @@ int main()
     Grafo* grafo = NULL;
     bool ehDirecionado = false;
 
-    while (op != 9)
+    while (op != 10)
     {
         printf("\n=== SISTEMA DE GRAFOS ===\n");
         printf("1. Carregar grafo de arquivo\n");
@@ -21,7 +22,8 @@ int main()
         printf("6. Arvore Geradora Minima (Prim)\n");
         printf("7. Menor Caminho (Dijkstra)\n");
         printf("8. Estatisticas do grafo\n");
-        printf("9. Sair\n");
+        printf("9.Desafios Extras\n");
+        printf("10. Sair\n");
         printf("\nEscolha uma operacao: ");
         
         if (scanf("%d", &op) != 1) {
@@ -121,7 +123,30 @@ int main()
                 break;
             }
 
-            case 9: { // Sair
+            case 9:{ // DESAFIO: Detecção de Ciclos
+                if (grafo == NULL) {
+                    printf("\n[ERRO] Nenhum grafo carregado! Escolha a opção 1 primeiro.\n");
+                } else {
+                    printf("\n=== DESAFIO: DETECCAO DE CICLOS (DFS) ===\n");
+                    printf("Tipo do grafo carregado: %s\n", ehDirecionado ? "Direcionado" : "Nao Direcionado");
+
+                    bool possuiCiclo = tem_ciclo(grafo, ehDirecionado);
+
+                    if (possuiCiclo) {
+                        printf("\n[RESULTADO] O grafo POSSUI CICLO(S)!\n");
+                    } else {
+                        printf("\n[RESULTADO] O grafo Nao possui ciclos (Eh Aciclico).\n");
+                    }
+                    printf("=========================================\n");
+
+                    while (getchar() != '\n'); 
+                    printf("\nPressione ENTER para voltar ao menu principal...");
+                    getchar();
+                }
+                break;
+            }
+
+            case 10: { // Sair
                 printf("\nSaindo...\n");
                 break;
             }
