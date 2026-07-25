@@ -179,19 +179,19 @@ void exibirRelatorioEstatisticas(Grafo* g, bool ehDirecionado){
     EstatisticasGrafo est = calcularEstatisticas(g, ehDirecionado);
 
     printf("\n===========================================\n");
-    printf("    Relatório de Estatísticas do Grafo:      \n");
+    printf("    Relatorio de Estatisticas do Grafo:      \n");
     printf("=============================================\n");
-
-    printf("Número de vértices: %d\n", est.numVertices);
-    printf("Número de arestas: %d\n", est.numArestas);
-    printf("Grafo é direcionado? %s\n", est.ehDirecionado ? "Sim" : "Não");
-    printf("Grafo eh conexo? %s\n", est.ehConexo ? "Sim" : "Não");
-    printf("Grafo tem ciclos? %s\n", est.temCiclos ? "Sim" : "Não");
+ 
+    printf("Numero de vertices: %d\n", est.numVertices);
+    printf("Numero de arestas: %d\n", est.numArestas);
+    printf("Grafo eh direcionado? %s\n", est.ehDirecionado ? "Sim" : "Nao");
+    printf("Grafo eh conexo? %s\n", est.ehConexo ? "Sim" : "Nao");
+    printf("Grafo tem ciclos? %s\n", est.temCiclos ? "Sim" : "Nao");
     printf("Densidade do grafo: %.4f\n", est.densidade, est.densidade*100);
     printf("-----------------------------------------------\n");
-    printf("Grau de cada vértice:\n");
+    printf("Grau de cada vertice:\n");
     for (int i=0; i< est.numVertices; i++){
-        printf("Vértice %d: Grau = %d\n", i, est.graus[i]);
+        printf("Vertice %d: Grau = %d\n", i, est.graus[i]);
     }
     printf("-----------------------------------------------\n");
 

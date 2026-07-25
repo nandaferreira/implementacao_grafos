@@ -7,7 +7,7 @@
 
 #ifndef GRAFO_H
 #define GRAFO_H
-
+#include <stdbool.h>
 
 typedef struct No
 {
@@ -85,9 +85,8 @@ int ordenacao_topologica();
  * @brief Árvore Geradora Mínima - Prim
  *
  */
-
-int arvore_minima();
-
+int encontrarMinChave(int* chave, bool* naAVG, int V);//Função Auxiilar
+void primAVG(Grafo* g, int verticeInicial);
 /**
  * @brief Menor Caminho - Dijkstra
  *
