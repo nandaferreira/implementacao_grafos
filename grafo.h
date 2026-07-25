@@ -8,6 +8,7 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 
+
 typedef struct No
 {
   int destino;
@@ -33,7 +34,7 @@ typedef struct
  *
  */
 
- Grafo *carrega_arquivo(char* nome_arquivo);
+ Grafo *carrega_arquivo(char *nome_arquivo);
 
  /**
  * @brief Libera memória de grafo carregado
