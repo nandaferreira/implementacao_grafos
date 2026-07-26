@@ -22,32 +22,37 @@ int main()
         printf("6. Arvore Geradora Minima (Prim)\n");
         printf("7. Menor Caminho (Dijkstra)\n");
         printf("8. Estatisticas do grafo\n");
-        printf("9.Desafios Extras\n");
+        printf("9. Desafios Extras\n");
         printf("10. Sair\n");
         printf("\nEscolha uma operacao: ");
         
         if (scanf("%d", &op) != 1) {
-            while (getchar() != '\n'); // Limpa caracteres invalidos
+            while (getchar() != '\n');
             op = 0;
             continue;
         }
 
         switch (op)
         {
-            case 1: { // Carregar arquivo
+            case 1: {
                 char arquivo[100];
                 printf("=== Digite o nome do arquivo juntamente com sua extensao ===\n");
                 scanf("%99s", arquivo);
                 
                 if (grafo != NULL) {
-                    libera_grafo(grafo); // Libera o anterior antes de carregar um novo
+                    libera_grafo(grafo);
                 }
                 
                 grafo = carrega_arquivo(arquivo);
+                if (grafo != NULL) {
+                    // Por padrão, assume-se não direcionado. 
+                    // Se quiser, pode perguntar ao usuário ou detectar pelo arquivo.
+                    ehDirecionado = false;
+                }
                 break;
             }
 
-            case 2: { // Mostrar grafo
+            case 2: {
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado! Primeiro escolha a opcao 1.\n");
                 } else {
@@ -56,34 +61,37 @@ int main()
                 break;
             }
 
-            case 3: { // DFS
+            case 3: {
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado!\n");
                 } else {
-                    busca_profundidade();
+                    // A função busca_profundidade() deve ser ajustada para receber o grafo.
+                    // Se a assinatura for diferente, adapte aqui.
+                    busca_profundidade(grafo);
                 }
                 break;
             }
 
-            case 4: { // BFS
+            case 4: {
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado!\n");
                 } else {
-                    busca_largura();
+                    busca_largura(grafo);
                 }
                 break;
             }
 
-            case 5: { // Ordenacao Topologica
+            case 5: {
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado!\n");
                 } else {
-                    ordenacao_topologica();
+                    // Chama a ordenação topológica passando o grafo
+                    ordenacao_topologica(grafo);
                 }
                 break;
             }
 
-            case 6: { // Algoritmo de Prim
+            case 6: {
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado! Escolha a opcao 1 primeiro.\n");
                 } else {
@@ -96,25 +104,23 @@ int main()
                         printf("\n[ERRO] Entrada invalida!\n");
                     }
                     
-                    // Limpa o buffer residual do teclado
                     while (getchar() != '\n'); 
-                    
                     printf("\nPressione ENTER para voltar ao menu principal...");
-                    getchar(); // Aguarda o ENTER do usuario
+                    getchar();
                 }
                 break;
             }
 
-            case 7: { // Dijkstra
+            case 7: {
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado!\n");
                 } else {
-                    menor_caminho();
+                    menor_caminho(grafo);
                 }
                 break;
             }
 
-            case 8: { // Estatisticas
+            case 8: {
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado! Primeiro escolha a opcao 1.\n");
                 } else {
@@ -123,30 +129,85 @@ int main()
                 break;
             }
 
-            case 9:{ // DESAFIO: Detecção de Ciclos
+            case 9: { // Desafios Extras - submenu
                 if (grafo == NULL) {
-                    printf("\n[ERRO] Nenhum grafo carregado! Escolha a opção 1 primeiro.\n");
-                } else {
-                    printf("\n=== DESAFIO: DETECCAO DE CICLOS (DFS) ===\n");
-                    printf("Tipo do grafo carregado: %s\n", ehDirecionado ? "Direcionado" : "Nao Direcionado");
+                    printf("\n[ERRO] Nenhum grafo carregado! Escolha a opcao 1 primeiro.\n");
+                    break;
+                }
 
-                    bool possuiCiclo = tem_ciclo(grafo, ehDirecionado);
-
-                    if (possuiCiclo) {
-                        printf("\n[RESULTADO] O grafo POSSUI CICLO(S)!\n");
-                    } else {
-                        printf("\n[RESULTADO] O grafo Nao possui ciclos (Eh Aciclico).\n");
+                int subOp = 0;
+                while (subOp != 4) {
+                    printf("\n=== DESAFIOS EXTRAS ===\n");
+                    printf("1. Deteccao de Ciclos (DFS)\n");
+                    printf("2. Componentes Fortemente Conexos (Kosaraju)\n");
+                    printf("3. Caminho Critico (DAG)\n");
+                    printf("4. Voltar ao menu principal\n");
+                    printf("\nEscolha uma opcao: ");
+                    
+                    if (scanf("%d", &subOp) != 1) {
+                        while (getchar() != '\n');
+                        subOp = 0;
+                        continue;
                     }
-                    printf("=========================================\n");
 
-                    while (getchar() != '\n'); 
-                    printf("\nPressione ENTER para voltar ao menu principal...");
-                    getchar();
+                    switch (subOp) {
+                        case 1: {
+                            printf("\n=== DETECCAO DE CICLOS ===\n");
+                            printf("Tipo do grafo: %s\n", ehDirecionado ? "Direcionado" : "Nao Direcionado");
+                            bool possuiCiclo = tem_ciclo(grafo, ehDirecionado);
+                            if (possuiCiclo) {
+                                printf("\n[RESULTADO] O grafo POSSUI CICLO(S)!\n");
+                            } else {
+                                printf("\n[RESULTADO] O grafo NAO possui ciclos (Aciclico).\n");
+                            }
+                            break;
+                        }
+                        case 2: {
+                            if (!ehDirecionado) {
+                                printf("\n[AVISO] Kosaraju e' mais adequado para grafos direcionados.\n");
+                                printf("Deseja continuar mesmo assim? (s/n): ");
+                                char resp;
+                                scanf(" %c", &resp);
+                                if (resp != 's' && resp != 'S') {
+                                    break;
+                                }
+                            }
+                            kosaraju(grafo);
+                            break;
+                        }
+                        case 3: {
+                            if (!ehDirecionado) {
+                                printf("\n[AVISO] Caminho Critico requer um grafo direcionado aciclico (DAG).\n");
+                                printf("Deseja continuar mesmo assim? (s/n): ");
+                                char resp;
+                                scanf(" %c", &resp);
+                                if (resp != 's' && resp != 'S') {
+                                    break;
+                                }
+                            }
+                            caminho_critico(grafo);
+                            break;
+                        }
+                        case 4: {
+                            printf("\nVoltando ao menu principal...\n");
+                            break;
+                        }
+                        default: {
+                            printf("\nOpcao invalida!\n");
+                            break;
+                        }
+                    }
+                    // Limpa o buffer após cada operação
+                    while (getchar() != '\n');
+                    if (subOp != 4) {
+                        printf("\nPressione ENTER para continuar...");
+                        getchar();
+                    }
                 }
                 break;
             }
 
-            case 10: { // Sair
+            case 10: {
                 printf("\nSaindo...\n");
                 break;
             }
@@ -158,7 +219,6 @@ int main()
         }
     } 
 
-    // Libera a memoria ao fechar o programa
     if (grafo != NULL) {
         libera_grafo(grafo);
         grafo = NULL;
