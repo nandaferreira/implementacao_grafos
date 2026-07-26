@@ -35,7 +35,10 @@ void executarTesteDFS(Grafo* grafo, int V);
 void executarTesteBFS(Grafo* grafo, int V);
 void executarTesteTopologica(Grafo* grafo, int V);
 void executarTesteCiclo(Grafo* grafo, int V);
-void executarTesteKosaraju(Grafo* grafo, int V);
+void executarTesteKosarajuSilencioso(Grafo* grafo, int V);
 void executarTesteCaminhoCritico(Grafo* grafo, int V);
+// Funções silenciosas para teste de desempenho
+void executarDFSCompleta(Grafo* grafo);
+void executarBFSCompleta(Grafo* grafo);
 
 #endif
