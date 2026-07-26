@@ -138,14 +138,92 @@ void mostra_grafo(Grafo* grafo) {
     printf("\n");
 }
 
+static void dfs_visita(Grafo *grafo, int vertice, int *visitado)
+{
+    visitado[vertice] = 1;
+    printf("%d ", vertice);
+
+    for (No *atual = grafo->lista[vertice]; atual != NULL; atual = atual->prox) {
+        int vizinho = atual->destino;
+        if (!visitado[vizinho]) {
+            dfs_visita(grafo, vizinho, visitado);
+        }
+    }
+}
+
 void busca_profundidade(Grafo *grafo)
 {
-    printf("\nDFS ainda nao implementada.\n");
+    if (grafo == NULL) {
+        printf("\n[ERRO] Nenhum grafo carregado!\n");
+        return;
+    }
+
+    int *visitado = (int *)calloc(grafo->V, sizeof(int));
+    if (visitado == NULL) {
+        printf("\n[ERRO] Falha ao alocar memoria para a busca.\n");
+        return;
+    }
+
+    printf("\nBusca em profundidade (DFS): ");
+    for (int i = 0; i < grafo->V; i++) {
+        if (!visitado[i]) {
+            dfs_visita(grafo, i, visitado);
+        }
+    }
+    printf("\n");
+
+    free(visitado);
 }
 
 void busca_largura(Grafo *grafo)
 {
-    printf("\nBFS ainda nao implementada.\n");
+    if (grafo == NULL) {
+        printf("\n[ERRO] Nenhum grafo carregado!\n");
+        return;
+    }
+
+    int *visitado = (int *)calloc(grafo->V, sizeof(int));
+    if (visitado == NULL) {
+        printf("\n[ERRO] Falha ao alocar memoria para a busca.\n");
+        return;
+    }
+
+    int *fila = (int *)malloc(grafo->V * sizeof(int));
+    if (fila == NULL) {
+        free(visitado);
+        printf("\n[ERRO] Falha ao alocar memoria para a fila.\n");
+        return;
+    }
+
+    printf("\nBusca em largura (BFS): ");
+
+    for (int inicio = 0; inicio < grafo->V; inicio++) {
+        if (visitado[inicio]) {
+            continue;
+        }
+
+        int frente = 0, tras = 0;
+        fila[tras++] = inicio;
+        visitado[inicio] = 1;
+
+        while (frente < tras) {
+            int vertice = fila[frente++];
+            printf("%d ", vertice);
+
+            for (No *atual = grafo->lista[vertice]; atual != NULL; atual = atual->prox) {
+                int vizinho = atual->destino;
+                if (!visitado[vizinho]) {
+                    visitado[vizinho] = 1;
+                    fila[tras++] = vizinho;
+                }
+            }
+        }
+    }
+
+    printf("\n");
+
+    free(fila);
+    free(visitado);
 }
 
 int ordenacao_topologica(Grafo* grafo) {
