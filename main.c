@@ -132,7 +132,7 @@ int main()
 
             case 9: { // Desafios Extras - submenu
                 int subOp = 0;
-                while (subOp != 4) {
+                while (subOp != 5) {
                     printf("\n=== DESAFIOS EXTRAS ===\n");
                     printf("1. Deteccao de Ciclos (DFS)\n");
                     printf("2. Componentes Fortemente Conexos (Kosaraju)\n");
@@ -212,7 +212,7 @@ int main()
                     }
                     // Limpa o buffer após cada operação
                     while (getchar() != '\n');
-                    if (subOp != 4) {
+                    if (subOp != 5) {
                         printf("\nPressione ENTER para continuar...");
                         getchar();
                     }
