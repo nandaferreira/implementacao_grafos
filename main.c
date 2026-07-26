@@ -111,11 +111,12 @@ int main()
                 break;
             }
 
-            case 7: {
+            case 7: { // Dijkstra
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado!\n");
-                } else {
-                    menor_caminho(grafo);
+                }
+                else {
+                    dijkstraMenu(grafo);
                 }
                 break;
             }

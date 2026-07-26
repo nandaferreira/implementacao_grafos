@@ -295,7 +295,120 @@ void primAVG(Grafo* g, int verticeInicial)
     
 }
 
-void menor_caminho(Grafo *grafo)
-{
-    printf("\nDijkstra ainda nao implementado.\n");
+// Função auxiliar: encontra o vértice não visitado com menor distância
+int procuraMenorDistancia(int* dist, bool* visitado, int V) {
+    int menor = INT_MAX;
+    int indice = -1;
+
+    for (int i = 0; i < V; i++) {
+        if (!visitado[i] && dist[i] < menor) {
+            menor = dist[i];
+            indice = i;
+        }
+    }
+    return indice;
+}
+
+// Dijkstra usando lista de adjacência
+int* menor_caminho(Grafo *grafo, int s, int* pai){
+    int V = grafo->V;
+    int* dist = (int*)malloc(V * sizeof(int));
+    bool* visitado = (bool*)malloc(V * sizeof(bool));
+
+    for (int i = 0; i < V; i++) {
+        dist[i] = INT_MAX;
+        visitado[i] = false;
+        pai[i] = -1;
+    }
+    dist[s] = 0;
+
+    int cont = V;
+    while (cont > 0) {
+        int vert = procuraMenorDistancia(dist, visitado, V);
+        if (vert == -1) break; // não há mais vértices alcançáveis
+
+        visitado[vert] = true;
+        cont--;
+
+        No* atual = grafo->lista[vert];
+        while (atual != NULL) {
+            int ind = atual->destino;
+            int peso = atual->peso;
+
+            if (!visitado[ind] && dist[vert] != INT_MAX && dist[vert] + peso < dist[ind]) {
+                dist[ind] = dist[vert] + peso;
+                pai[ind] = vert;
+            }
+            atual = atual->prox;
+        }
+    }
+
+    free(visitado);
+    return dist;
+}
+
+void imprimirCaminho(int* pai, int destino) {
+    int caminho[1000]; // tamanho de sobra
+    int qtd = 0;
+
+    int v = destino;
+    while (v != -1) {
+        caminho[qtd++] = v;
+        v = pai[v];
+    }
+
+    // imprime na ordem correta: da origem até o destino
+    for (int i = qtd - 1; i >= 0; i--) {
+        printf("%d", caminho[i]);
+        if (i > 0) printf(" -> ");
+    }
+}
+
+void dijkstraMenu(Grafo* grafo) {
+    if (grafo == NULL) {
+        printf("\n[ERRO] Grafo não carregado!\n");
+        return;
+    }
+
+    int V = grafo->V;
+    int origem;
+
+    printf("\n=== DIJKSTRA - MENOR CAMINHO ===\n");
+    printf("Vértices disponíveis: 0 a %d\n", V - 1);
+    printf("Digite o vértice de origem: ");
+
+    if (scanf("%d", &origem) != 1 || origem < 0 || origem >= V) {
+        printf("\n[ERRO] Vértice inválido!\n");
+        while (getchar() != '\n');
+        return;
+    }
+    while (getchar() != '\n'); // limpa buffer
+
+    int* pai = (int*)malloc(V * sizeof(int));
+    int* distancias = menor_caminho(grafo, origem, pai);
+
+    printf("\n=== DIJKSTRA (Origem: %d) ===\n\n", origem);
+    printf("Vértice | Distância | Caminho\n");
+    printf("--------|-----------|--------\n");
+
+    for (int i = 0; i < V; i++) {
+        if (distancias[i] == INT_MAX) {
+            continue; // se não tiver caminho até esse vértice não imprime nada
+        }
+
+        if (i == origem) {
+            printf("   %d    |     0     |     0\n", i);
+        } else {
+            printf("   %d    |     %d     | ", i, distancias[i]);
+            imprimirCaminho(pai, i);
+            printf("\n");
+        }
+    }
+
+    free(distancias);
+    free(pai);
+
+    printf("\nPressione ENTER para voltar ao menu...");
+    while (getchar() != '\n');
+    getchar();
 }

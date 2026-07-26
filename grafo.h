@@ -71,6 +71,9 @@ void primAVG(Grafo *grafo, int verticeInicial);
 ==========================*/
 
 // Algoritmo de Dijkstra
-void menor_caminho(Grafo *grafo);
+int* menor_caminho(Grafo *grafo, int s, int* pai);
+int procuraMenorDistancia(int* dist, bool* visitado, int V);
+void imprimirCaminho(int* pai, int destino);
+void dijkstraMenu(Grafo* grafo);
 
 #endif
