@@ -1,105 +1,76 @@
-/**
- * @file Grafo.h
- * @brief Arquivo .h para grafos
- *
- *
- */
-
 #ifndef GRAFO_H
 #define GRAFO_H
+
 #include <stdbool.h>
 
-typedef struct No
-{
-  int destino;
-  int peso;
-  struct No *prox;
+/*=========================
+    Estruturas
+==========================*/
+
+typedef struct No {
+    int destino;
+    int peso;
+    struct No *prox;
 } No;
 
-typedef struct
-{
-  int V;      // Número de vértices
-  int A;      // Número de arestas
-  No **lista; // Lista de adjacência
+typedef struct {
+    int V;          // Número de vértices
+    int A;          // Número de arestas
+    No **lista;     // Lista de adjacência
 } Grafo;
 
 
+/*=========================
+    Manipulação do Grafo
+==========================*/
 
-/**
- * @brief Leitura de Grafos no formato:
- * V A
- * origem destino peso
- * origem destino peso
- * ...
- *
- */
+// Carrega um grafo de um arquivo
+Grafo *carrega_arquivo(char *nome_arquivo);
 
- Grafo *carrega_arquivo(char *nome_arquivo);
+// Libera toda a memória utilizada pelo grafo
+void libera_grafo(Grafo *grafo);
 
- /**
- * @brief Libera memória de grafo carregado
- *
- */
+// Exibe a lista de adjacência
+void mostra_grafo(Grafo *grafo);
 
- void libera_grafo(Grafo* grafo);
+// Insere uma aresta
+void adicionar_aresta(Grafo *grafo, int origem, int destino, int peso);
 
 
-/**
- * @brief Mostra Grafo
- *
- */
+/*=========================
+    Algoritmos de Busca
+==========================*/
 
-void mostra_grafo(Grafo* grafo);
+// Busca em Profundidade (DFS)
+void busca_profundidade(Grafo *grafo);
 
-
- // PRECISA DE DEFINIÇÃO DE FUNÇÃO
- /**
- * @brief Adiciona aresta para inserção ordenada nas listas de adjacência
- *
- */
-void adicionar_aresta(Grafo* grafo, int origem, int destino, int peso);
-
-/**
- * @brief Busca em Profundidade (DFS)
- *
- */
-
-int busca_profundidade();
-
-/**
- * @brief Busca em Largura (BFS)
- *
- */
-
-int busca_largura();
-
-/**
- * @brief Ordenação Topológica
- *
- */
-
-int ordenacao_topologica();
+// Busca em Largura (BFS)
+void busca_largura(Grafo *grafo);
 
 
-/**
- * @brief Árvore Geradora Mínima - Prim
- *
- */
-int encontrarMinChave(int* chave, bool* naAVG, int V);//Função Auxiilar
-void primAVG(Grafo* g, int verticeInicial);
-/**
- * @brief Menor Caminho - Dijkstra
- *
- */
+/*=========================
+    Ordenação Topológica
+==========================*/
 
-int menor_caminho();
+int ordenacao_topologica(Grafo *grafo);
 
-/**
- * @brief Printa Estatísticas
- *
- */
 
-int estatisticas();
+/*=========================
+    Árvore Geradora Mínima
+==========================*/
 
+// Função auxiliar do Prim
+int encontrarMinChave(int *chave, bool *naAVG, int V);
+
+// Algoritmo de Prim
+void primAVG(Grafo *grafo, int verticeInicial);
+
+
+/*=========================
+    Menor Caminho
+==========================*/
+
+// Algoritmo de Dijkstra
+void menor_caminho(Grafo *grafo);
 
 #endif
