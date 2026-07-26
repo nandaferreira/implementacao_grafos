@@ -208,9 +208,9 @@ void kosaraju(Grafo* g) {
 
     // 4. Exibição dos resultados
     printf("\n=== COMPONENTES FORTEMENTE CONEXOS (Kosaraju) ===\n");
-    printf("Número de componentes: %d\n", numComponentes);
+    printf("Numero de componentes: %d\n", numComponentes);
 
-    // Agrupa os vértices por componente para exibição
+    // Agrupa os vertices por componente para exibicao
     int** grupos = (int**)malloc(numComponentes * sizeof(int*));
     int* tamanhos = (int*)calloc(numComponentes, sizeof(int));
 
@@ -323,11 +323,11 @@ void caminho_critico(Grafo* g) {
     int* ordem = obter_ordem_topologica(g, &tamanho);
 
     if (ordem == NULL) {
-        printf("\n[ERRO] O grafo contém ciclo! Não é um DAG.\n");
+        printf("\n[ERRO] O grafo contem ciclo! Nao e um DAG.\n");
         return;
     }
 
-    // Inicializa distâncias como -infinito (usamos -1)
+    // Inicializa distancias como -infinito (usamos -1)
     int* dist = (int*)malloc(V * sizeof(int));
     int* pred = (int*)malloc(V * sizeof(int));
     for (int i = 0; i < V; i++) {
@@ -362,7 +362,7 @@ void caminho_critico(Grafo* g) {
     }
 
     // Exibe resultados
-    printf("\n=== CAMINHO CRÍTICO (Maior Distância) ===\n");
+    printf("\n=== CAMINHO CRITICO (Maior Distancia) ===\n");
     printf("Origem: %d\n", origem);
     printf("Destino: %d\n", fim);
     printf("Custo total: %d\n", dist[fim]);
@@ -393,7 +393,7 @@ void caminho_critico(Grafo* g) {
 // FUNÇÃO: Gerar grafo aleatório para teste
 // ============================================
 Grafo* gerarGrafoTeste(int V, int A) {
-    printf("Gerando grafo com %d vértices e %d arestas...\n", V, A);
+    printf("Gerando grafo com %d vertices e %d arestas...\n", V, A);
     
     Grafo* grafo = (Grafo*)malloc(sizeof(Grafo));
     if (grafo == NULL) return NULL;
@@ -453,68 +453,68 @@ Grafo* gerarGrafoTeste(int V, int A) {
 // ============================================
 
 void executarTesteDFS(Grafo* grafo, int V) {
-    printf("Executando DFS para todos os vértices...\n");
+    printf("Executando DFS para todos os vertices...\n");
     clock_t inicio = clock();
     
-    // USA A VERSÃO SILENCIOSA!
+    // USA A VERSAO SILENCIOSA!
     executarDFSCompleta(grafo);
     
     clock_t fim = clock();
     double tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
     printf("Tempo DFS: %.4f segundos\n", tempo);
-    printf("Média por vértice: %.6f segundos\n", tempo / V);
+    printf("Media por vertice: %.6f segundos\n", tempo / V);
 }
 
 void executarTesteBFS(Grafo* grafo, int V) {
-    printf("Executando BFS para todos os vértices...\n");
+    printf("Executando BFS para todos os vertices...\n");
     clock_t inicio = clock();
     
-    // USA A VERSÃO SILENCIOSA!
+    // USA A VERSAO SILENCIOSA!
     executarBFSCompleta(grafo);
     
     clock_t fim = clock();
     double tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
     printf("Tempo BFS: %.4f segundos\n", tempo);
-    printf("Média por vértice: %.6f segundos\n", tempo / V);
+    printf("Media por vertice: %.6f segundos\n", tempo / V);
 }
 
 
 void executarTesteTopologica(Grafo* grafo, int V) {
-    printf("Executando Ordenação Topológica...\n");
+    printf("Executando Ordenacao Topologica...\n");
     clock_t inicio = clock();
     
     ordenacao_topologica(grafo);
     
     clock_t fim = clock();
     double tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-    printf("Tempo Ordenação Topológica: %.4f segundos\n", tempo);
+    printf("Tempo Ordenacao Topologica: %.4f segundos\n", tempo);
 }
 
 void executarTesteCiclo(Grafo* grafo, int V) {
-    printf("Executando Detecção de Ciclos...\n");
+    printf("Executando Deteccao de Ciclos...\n");
     clock_t inicio = clock();
     
-    // ARMAZENA O RESULTADO para evitar otimização
+    // ARMAZENA O RESULTADO para evitar otimizacao
     bool resultado = tem_ciclo(grafo, false);
     
     clock_t fim = clock();
     double tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
     
     // EXIBE O RESULTADO
-    printf("Resultado: %s\n", resultado ? "POSSUI CICLO" : "NÃO POSSUI CICLO");
-    printf("Tempo Detecção de Ciclos: %.6f segundos\n", tempo);
-    printf("Média por vértice: %.6f segundos\n", tempo / V);
+    printf("Resultado: %s\n", resultado ? "POSSUI CICLO" : "NAO POSSUI CICLO");
+    printf("Tempo Deteccao de Ciclos: %.6f segundos\n", tempo);
+    printf("Media por vertice: %.6f segundos\n", tempo / V);
 }
 
 void executarTesteCaminhoCritico(Grafo* grafo, int V) {
-    printf("Executando Caminho Crítico...\n");
+    printf("Executando Caminho Critico...\n");
     clock_t inicio = clock();
     
     caminho_critico(grafo);
     
     clock_t fim = clock();
     double tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-    printf("Tempo Caminho Crítico: %.4f segundos\n", tempo);
+    printf("Tempo Caminho Critico: %.4f segundos\n", tempo);
 }
 
 // ============================================
@@ -673,24 +673,24 @@ void executarTesteKosarajuSilencioso(Grafo* grafo, int V) {
 // ============================================
 void testarDesempenho() {
     printf("\n╔══════════════════════════════════════════════════════════════════╗\n");
-    printf("║           TESTE DE DESEMPENHO COM GRAFOS DE 1000+ VÉRTICES      ║\n");
+    printf("║           TESTE DE DESEMPENHO COM GRAFOS DE 1000+ VERTICES      ║\n");
     printf("╚══════════════════════════════════════════════════════════════════╝\n");
     printf("\n");
     
     // Seleção do tamanho do grafo
     printf("Escolha o tamanho do grafo para teste:\n");
-    printf("1. 1000 vértices, 5000 arestas\n");
-    printf("2. 2000 vértices, 10000 arestas\n");
-    printf("3. 3000 vértices, 15000 arestas\n");
-    printf("4. 4000 vértices, 20000 arestas\n");
-    printf("5. 5000 vértices, 25000 arestas\n");
+    printf("1. 1000 vertices, 5000 arestas\n");
+    printf("2. 2000 vertices, 10000 arestas\n");
+    printf("3. 3000 vertices, 15000 arestas\n");
+    printf("4. 4000 vertices, 20000 arestas\n");
+    printf("5. 5000 vertices, 25000 arestas\n");
     printf("6. Voltar\n");
-    printf("\nEscolha uma opção: ");
+    printf("\nEscolha uma opcao: ");
     
     int opTamanho;
     if (scanf("%d", &opTamanho) != 1 || opTamanho < 1 || opTamanho > 6) {
         while (getchar() != '\n');
-        printf("\n[ERRO] Opção inválida!\n");
+        printf("\n[ERRO] Opcao invalida!\n");
         return;
     }
     
@@ -720,23 +720,23 @@ void testarDesempenho() {
     int opTeste = 0;
     while (opTeste != 8) {
         printf("\n╔══════════════════════════════════════════════════════════════════╗\n");
-        printf("║  Grafos: %d vértices, %d arestas                                ║\n", V, grafo->A);
+        printf("║  Grafos: %d vertices, %d arestas                                ║\n", V, grafo->A);
         printf("╠══════════════════════════════════════════════════════════════════╣\n");
-        printf("║  Escolha a operação para testar:                                ║\n");
+        printf("║  Escolha a operacao para testar:                                ║\n");
         printf("║  1. Busca em Profundidade (DFS)                                ║\n");
         printf("║  2. Busca em Largura (BFS)                                     ║\n");
-        printf("║  3. Ordenação Topológica                                       ║\n");
-        printf("║  4. Detecção de Ciclos                                         ║\n");
+        printf("║  3. Ordenacao Topologica                                       ║\n");
+        printf("║  4. Deteccao de Ciclos                                         ║\n");
         printf("║  5. Kosaraju (Componentes Fortemente Conexos)                  ║\n");
-        printf("║  6. Caminho Crítico (DAG)                                      ║\n");
+        printf("║  6. Caminho Critico (DAG)                                      ║\n");
         printf("║  7. Executar TODOS os testes                                   ║\n");
         printf("║  8. Voltar                                                     ║\n");
         printf("╚══════════════════════════════════════════════════════════════════╝\n");
-        printf("Escolha uma opção: ");
+        printf("Escolha uma opcao: ");
         
         if (scanf("%d", &opTeste) != 1) {
             while (getchar() != '\n');
-            printf("\n[ERRO] Opção inválida!\n");
+            printf("\n[ERRO] Opcao invalida!\n");
             continue;
         }
         
@@ -764,7 +764,7 @@ void testarDesempenho() {
             case 7: {
                 printf("╔══════════════════════════════════════════════════════════════════╗\n");
                 printf("║           EXECUTANDO TODOS OS TESTES                            ║\n");
-                printf("║           Isso pode levar vários minutos...                     ║\n");
+                printf("║           Isso pode levar varios minutos...                     ║\n");
                 printf("╚══════════════════════════════════════════════════════════════════╝\n\n");
                 
                 executarTesteDFS(grafo, V);
@@ -784,7 +784,7 @@ void testarDesempenho() {
                 printf("Voltando...\n");
                 break;
             default:
-                printf("\n[ERRO] Opção inválida!\n");
+                printf("\n[ERRO] Opcao invalida!\n");
         }
         
         if (opTeste != 8) {

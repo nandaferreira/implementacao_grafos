@@ -172,7 +172,7 @@ void liberarEstatisticas(EstatisticasGrafo* est){
 
 void exibirRelatorioEstatisticas(Grafo* g, bool ehDirecionado){
     if (g==NULL){
-        printf("Grafo nulo. Não é possível calcular estatísticas.\n");
+        printf("Grafo nulo. Nao e possivel calcular estatisticas.\n");
         return;
     }
 

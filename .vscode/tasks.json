@@ -6,12 +6,15 @@
             "type": "shell",
             "command": "gcc",
             "args": [
-                "-g",
+                "-Wall",
+                "-Wextra",
+                "-g3",
                 "main.c",
                 "grafo.c",
                 "estatistica.c",
+                "desafios.c",
                 "-o",
-                "programa.exe"
+                "output/main.exe"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -31,12 +34,15 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
+                "main.c",
+                "grafo.c",
+                "estatistica.c",
+                "desafios.c",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${workspaceFolder}\\output\\main.exe"
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$gcc"

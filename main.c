@@ -137,7 +137,7 @@ int main()
                     printf("1. Deteccao de Ciclos (DFS)\n");
                     printf("2. Componentes Fortemente Conexos (Kosaraju)\n");
                     printf("3. Caminho Critico (DAG)\n");
-                    printf("4. Desempenho de Grafo com 1000+ vértices\n");
+                    printf("4. Desempenho de Grafo com 1000+ vertices\n");
                     printf("5. Voltar ao menu principal\n");
                     printf("\nEscolha uma opcao: ");
                     

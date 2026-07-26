@@ -8,12 +8,6 @@
 #define INF INT_MAX
 // #include <string.h>
 
-/*
- * V A
- * origem destino peso
- * origem destino peso
- *
- */
 void adicionar_aresta(Grafo *grafo, int origem, int destino, int peso)
 {
     if (grafo == NULL ||
@@ -111,8 +105,6 @@ void libera_grafo(Grafo* grafo) {
 }
 
 
-
-
 void mostra_grafo(Grafo* grafo) {
     if (grafo == NULL) {
         printf("Grafo vazio!\n");
@@ -120,11 +112,11 @@ void mostra_grafo(Grafo* grafo) {
     }
 
     printf("\n=== GRAFO ===\n");
-    printf("Vértices: %d, Arestas: %d\n", grafo->V, grafo->A);
-    printf("Lista de Adjacência:\n");
+    printf("Vertices: %d, Arestas: %d\n", grafo->V, grafo->A);
+    printf("Lista de Adjacencia:\n");
 
     for (int i = 0; i < grafo->V; i++) {
-        printf("Vértice %d: ", i);
+        printf("Vertice %d: ", i);
         No* atual = grafo->lista[i];
         if (atual == NULL) {
             printf("(sem arestas)");
@@ -262,12 +254,12 @@ int ordenacao_topologica(Grafo* grafo) {
     }
 
     if (temCiclo) {
-        printf("\n[ERRO] O grafo possui ciclo! Não é um DAG.\n");
+        printf("\n[ERRO] O grafo possui ciclo! Nao e um DAG.\n");
         free(cor); free(pilha); free(ordem);
         return 0;
     }
 
-    printf("\n=== ORDENAÇÃO TOPOLÓGICA ===\n");
+    printf("\n=== ORDENACAO TOPOLOGICA ===\n");
     printf("Ordem: ");
     for (int i = 0; i < V; i++) {
         printf("%d%s", ordem[i], (i == V-1) ? "\n" : " -> ");
@@ -444,7 +436,7 @@ void imprimirCaminho(int* pai, int destino) {
 
 void dijkstraMenu(Grafo* grafo) {
     if (grafo == NULL) {
-        printf("\n[ERRO] Grafo não carregado!\n");
+        printf("\n[ERRO] Grafo nao carregado!\n");
         return;
     }
 
@@ -452,11 +444,11 @@ void dijkstraMenu(Grafo* grafo) {
     int origem;
 
     printf("\n=== DIJKSTRA - MENOR CAMINHO ===\n");
-    printf("Vértices disponíveis: 0 a %d\n", V - 1);
-    printf("Digite o vértice de origem: ");
+    printf("Vertices disponiveis: 0 a %d\n", V - 1);
+    printf("Digite o vertice de origem: ");
 
     if (scanf("%d", &origem) != 1 || origem < 0 || origem >= V) {
-        printf("\n[ERRO] Vértice inválido!\n");
+        printf("\n[ERRO] Vertice invalido!\n");
         while (getchar() != '\n');
         return;
     }
@@ -466,7 +458,7 @@ void dijkstraMenu(Grafo* grafo) {
     int* distancias = menor_caminho(grafo, origem, pai);
 
     printf("\n=== DIJKSTRA (Origem: %d) ===\n\n", origem);
-    printf("Vértice | Distância | Caminho\n");
+    printf("Vertice | Distancia | Caminho\n");
     printf("--------|-----------|--------\n");
 
     for (int i = 0; i < V; i++) {
