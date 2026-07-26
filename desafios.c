@@ -672,9 +672,9 @@ void executarTesteKosarajuSilencioso(Grafo* grafo, int V) {
 // FUNÇÃO PRINCIPAL: Menu de Teste de Desempenho
 // ============================================
 void testarDesempenho() {
-    printf("\n╔══════════════════════════════════════════════════════════════════╗\n");
-    printf("║           TESTE DE DESEMPENHO COM GRAFOS DE 1000+ VERTICES      ║\n");
-    printf("╚══════════════════════════════════════════════════════════════════╝\n");
+    printf("\n+------------------------------------------------------------------+\n");
+    printf("|        TESTE DE DESEMPENHO COM GRAFOS DE 1000+ VERTICES            |\n");
+    printf("+--------------------------------------------------------------------+\n");
     printf("\n");
     
     // Seleção do tamanho do grafo
@@ -719,19 +719,19 @@ void testarDesempenho() {
     // Menu de operações para testar
     int opTeste = 0;
     while (opTeste != 8) {
-        printf("\n╔══════════════════════════════════════════════════════════════════╗\n");
-        printf("║  Grafos: %d vertices, %d arestas                                ║\n", V, grafo->A);
-        printf("╠══════════════════════════════════════════════════════════════════╣\n");
-        printf("║  Escolha a operacao para testar:                                ║\n");
-        printf("║  1. Busca em Profundidade (DFS)                                ║\n");
-        printf("║  2. Busca em Largura (BFS)                                     ║\n");
-        printf("║  3. Ordenacao Topologica                                       ║\n");
-        printf("║  4. Deteccao de Ciclos                                         ║\n");
-        printf("║  5. Kosaraju (Componentes Fortemente Conexos)                  ║\n");
-        printf("║  6. Caminho Critico (DAG)                                      ║\n");
-        printf("║  7. Executar TODOS os testes                                   ║\n");
-        printf("║  8. Voltar                                                     ║\n");
-        printf("╚══════════════════════════════════════════════════════════════════╝\n");
+        printf("\n+---------------------------------------------------------------+\n");
+        printf("| Grafos: %d vertices, %d arestas                                 |\n", V, grafo->A);
+        printf("+-----------------------------------------------------------------+\n");
+        printf("| Escolha a operacao para testar:                                 |\n");
+        printf("| 1. Busca em Profundidade (DFS)                                  |\n");
+        printf("| 2. Busca em Largura (BFS)                                       |\n");
+        printf("| 3. Ordenacao Topologica                                         |\n");
+        printf("| 4. Deteccao de Ciclos                                           |\n");
+        printf("| 5. Kosaraju (Componentes Fortemente Conexos)                    |\n");
+        printf("| 6. Caminho Critico (DAG)                                        |\n");
+        printf("| 7. Executar TODOS os testes                                     |\n");
+        printf("| 8. Voltar                                                       |\n");
+        printf("+-----------------------------------------------------------------+\n");
         printf("Escolha uma opcao: ");
         
         if (scanf("%d", &opTeste) != 1) {
@@ -762,10 +762,10 @@ void testarDesempenho() {
                 executarTesteCaminhoCritico(grafo, V);
                 break;
             case 7: {
-                printf("╔══════════════════════════════════════════════════════════════════╗\n");
-                printf("║           EXECUTANDO TODOS OS TESTES                            ║\n");
-                printf("║           Isso pode levar varios minutos...                     ║\n");
-                printf("╚══════════════════════════════════════════════════════════════════╝\n\n");
+                printf("|-------------------------------------------------------------------|\n");
+                printf("|          EXECUTANDO TODOS OS TESTES                               |\n");
+                printf("|          Isso pode levar varios minutos...                        |\n");
+                printf("|-------------------------------------------------------------------|\n\n");
                 
                 executarTesteDFS(grafo, V);
                 printf("\n");
