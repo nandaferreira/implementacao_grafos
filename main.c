@@ -131,18 +131,14 @@ int main()
             }
 
             case 9: { // Desafios Extras - submenu
-                if (grafo == NULL) {
-                    printf("\n[ERRO] Nenhum grafo carregado! Escolha a opcao 1 primeiro.\n");
-                    break;
-                }
-
                 int subOp = 0;
                 while (subOp != 4) {
                     printf("\n=== DESAFIOS EXTRAS ===\n");
                     printf("1. Deteccao de Ciclos (DFS)\n");
                     printf("2. Componentes Fortemente Conexos (Kosaraju)\n");
                     printf("3. Caminho Critico (DAG)\n");
-                    printf("4. Voltar ao menu principal\n");
+                    printf("4. Desempenho de Grafo com 1000+ vértices\n");
+                    printf("5. Voltar ao menu principal\n");
                     printf("\nEscolha uma opcao: ");
                     
                     if (scanf("%d", &subOp) != 1) {
@@ -153,6 +149,10 @@ int main()
 
                     switch (subOp) {
                         case 1: {
+                            if (grafo == NULL) {
+                                printf("\n[ERRO] Nenhum grafo carregado! Escolha a opcao 1 do menu principal primeiro.\n");
+                                break;
+                            }
                             printf("\n=== DETECCAO DE CICLOS ===\n");
                             printf("Tipo do grafo: %s\n", ehDirecionado ? "Direcionado" : "Nao Direcionado");
                             bool possuiCiclo = tem_ciclo(grafo, ehDirecionado);
@@ -164,6 +164,10 @@ int main()
                             break;
                         }
                         case 2: {
+                            if (grafo == NULL) {
+                                printf("\n[ERRO] Nenhum grafo carregado! Escolha a opcao 1 do menu principal primeiro.\n");
+                                break;
+                            }
                             if (!ehDirecionado) {
                                 printf("\n[AVISO] Kosaraju e' mais adequado para grafos direcionados.\n");
                                 printf("Deseja continuar mesmo assim? (s/n): ");
@@ -177,6 +181,10 @@ int main()
                             break;
                         }
                         case 3: {
+                            if (grafo == NULL) {
+                                printf("\n[ERRO] Nenhum grafo carregado! Escolha a opcao 1 do menu principal primeiro.\n");
+                                break;
+                            }
                             if (!ehDirecionado) {
                                 printf("\n[AVISO] Caminho Critico requer um grafo direcionado aciclico (DAG).\n");
                                 printf("Deseja continuar mesmo assim? (s/n): ");
@@ -190,6 +198,10 @@ int main()
                             break;
                         }
                         case 4: {
+                            testarDesempenho();
+                            break;
+                        }
+                        case 5: {
                             printf("\nVoltando ao menu principal...\n");
                             break;
                         }

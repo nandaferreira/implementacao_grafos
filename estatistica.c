@@ -187,7 +187,7 @@ void exibirRelatorioEstatisticas(Grafo* g, bool ehDirecionado){
     printf("Grafo eh direcionado? %s\n", est.ehDirecionado ? "Sim" : "Nao");
     printf("Grafo eh conexo? %s\n", est.ehConexo ? "Sim" : "Nao");
     printf("Grafo tem ciclos? %s\n", est.temCiclos ? "Sim" : "Nao");
-    printf("Densidade do grafo: %.4f\n", est.densidade, est.densidade*100);
+    printf("Densidade do grafo: %.4f %.4f\n", est.densidade, est.densidade*100);
     printf("-----------------------------------------------\n");
     printf("Grau de cada vertice:\n");
     for (int i=0; i< est.numVertices; i++){

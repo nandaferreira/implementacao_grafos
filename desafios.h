@@ -26,4 +26,16 @@ Calcula e exibe o caminho crítico (maior distância) em um DAG.
  */
 void caminho_critico(Grafo* g);
 
+// Funções de teste de desempenho
+Grafo* gerarGrafoTeste(int V, int A);
+void testarDesempenho();
+
+// Funções auxiliares para teste
+void executarTesteDFS(Grafo* grafo, int V);
+void executarTesteBFS(Grafo* grafo, int V);
+void executarTesteTopologica(Grafo* grafo, int V);
+void executarTesteCiclo(Grafo* grafo, int V);
+void executarTesteKosaraju(Grafo* grafo, int V);
+void executarTesteCaminhoCritico(Grafo* grafo, int V);
+
 #endif
