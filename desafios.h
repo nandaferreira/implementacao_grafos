@@ -14,15 +14,15 @@ bool tem_ciclo(Grafo* g, bool ehDirecionado);
 
 //Kosaraju para componentes fortemente conexos
 /**
- * @brief Encontra e exibe os componentes fortemente conexos usando Kosaraju.
- * @param g Ponteiro para o Grafo (deve ser direcionado).
+Encontra e exibe os componentes fortemente conexos usando Kosaraju.
+ g Ponteiro para o Grafo (deve ser direcionado).
  */
 void kosaraju(Grafo* g);
 
 //Caminho Crítico (maior distância em DAG)
 /**
- * @brief Calcula e exibe o caminho crítico (maior distância) em um DAG.
- * @param g Ponteiro para o Grafo (deve ser direcionado e acíclico).
+Calcula e exibe o caminho crítico (maior distância) em um DAG.
+ g Ponteiro para o Grafo (deve ser direcionado e acíclico).
  */
 void caminho_critico(Grafo* g);
 
