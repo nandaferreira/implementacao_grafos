@@ -1,9 +1,3 @@
-/**
- * @file grafo.c
- * @brief Arquivo .c de funcoes relacionadas a grafos
- *
- *
- */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,17 +14,35 @@
  * origem destino peso
  *
  */
-void adicionar_aresta(Grafo* grafo, int origem, int destino, int peso) {
-    if (grafo == NULL || origem < 0 || origem >= grafo->V || destino < 0 || destino >= grafo->V) {
-        printf("Erro! Tentativa de inserir aresta com vertice invalido (%d -> %d)\n", origem, destino);
+void adicionar_aresta(Grafo *grafo, int origem, int destino, int peso)
+{
+    if (grafo == NULL ||
+        origem < 0 || origem >= grafo->V ||
+        destino < 0 || destino >= grafo->V)
+    {
+        printf("Erro ao inserir aresta (%d -> %d)\n", origem, destino);
         return;
     }
-    // Adiciona aresta origem -> destino
-    No* novo = (No*) malloc(sizeof(No));
+
+    No *novo = (No *)malloc(sizeof(No));
+
+    if (novo == NULL)
+    {
+        printf("Erro de memoria.\n");
+        return;
+    }
+
     novo->destino = destino;
     novo->peso = peso;
-    novo->prox = grafo->lista[origem];
-    grafo->lista[origem] = novo;
+    novo->prox = NULL;
+
+    No **atual = &grafo->lista[origem];
+
+    while (*atual != NULL && (*atual)->destino < destino)
+        atual = &((*atual)->prox);
+
+    novo->prox = *atual;
+    *atual = novo;
 }
 
 Grafo* carrega_arquivo(char* nome_arquivo) {
@@ -126,23 +138,67 @@ void mostra_grafo(Grafo* grafo) {
     printf("\n");
 }
 
-int busca_profundidade()
+void busca_profundidade(Grafo *grafo)
 {
-    printf("Busquei em profundidade");
+    printf("\nDFS ainda nao implementada.\n");
+}
+
+void busca_largura(Grafo *grafo)
+{
+    printf("\nBFS ainda nao implementada.\n");
+}
+
+int ordenacao_topologica(Grafo* grafo) {
+    if (grafo == NULL) {
+        printf("\n[ERRO] Nenhum grafo carregado!\n");
+        return 0;
+    }
+
+    int V = grafo->V;
+    int *cor = (int*)calloc(V, sizeof(int)); // 0=branco, 1=cinza, 2=preto
+    int *pilha = (int*)malloc(V * sizeof(int));
+    int topo = 0;
+    int *ordem = (int*)malloc(V * sizeof(int));
+    int idx = V - 1;
+    int temCiclo = 0;
+
+    // DFS recursiva para ordenação topológica
+    void dfs(int v) {
+        cor[v] = 1; // cinza – em processamento
+        No* atual = grafo->lista[v];
+        while (atual != NULL) {
+            int vizinho = atual->destino;
+            if (cor[vizinho] == 1) {
+                temCiclo = 1; // ciclo detectado
+            } else if (cor[vizinho] == 0) {
+                dfs(vizinho);
+            }
+            atual = atual->prox;
+        }
+        cor[v] = 2; // preto – finalizado
+        ordem[idx--] = v; // insere no final da ordem
+    }
+
+    for (int i = 0; i < V; i++) {
+        if (cor[i] == 0) dfs(i);
+    }
+
+    if (temCiclo) {
+        printf("\n[ERRO] O grafo possui ciclo! Não é um DAG.\n");
+        free(cor); free(pilha); free(ordem);
+        return 0;
+    }
+
+    printf("\n=== ORDENAÇÃO TOPOLÓGICA ===\n");
+    printf("Ordem: ");
+    for (int i = 0; i < V; i++) {
+        printf("%d%s", ordem[i], (i == V-1) ? "\n" : " -> ");
+    }
+
+    free(cor); free(pilha); free(ordem);
     return 1;
 }
 
-int busca_largura()
-{
-    printf("Busquei em largura");
-    return 1;
-}
-
-int ordenacao_topologica()
-{
-    printf("Ordenei topologicamente");
-    return 1;
-}
 //FUNÇÃO AUXILIAR PARA ARVORE GERADORA MINIMA (PRIM)'
 int encontrarMinChave(int* chave, bool* naAVG, int V) {
     int min = INF;
@@ -159,12 +215,34 @@ int encontrarMinChave(int* chave, bool* naAVG, int V) {
 //Árvore Geradora Minima (Prim)
 void primAVG(Grafo* g, int verticeInicial)
 {
+    if (g == NULL)
+    {
+     printf("Grafo inexistente.\n");
+     return;
+    }
+
+    if (verticeInicial < 0 || verticeInicial >= g->V)
+    {
+     printf("Vertice inicial invalido.\n");
+      return;
+    }
+   
     int V= g->V;
 
     //Alocação  
     int* chave= (int*) malloc(V*sizeof(int));
     int* pai= (int*) malloc(V*sizeof(int));
     bool* naAVG=(bool*) malloc(V*sizeof(bool));
+    
+    if (chave == NULL || pai == NULL || naAVG == NULL){
+     printf("Erro de memoria.\n");
+
+     free(chave);
+     free(pai);
+     free(naAVG);
+
+     return;
+    }
     //Inicialização das variáveis com valores iniciais
     for(int i=0; i<V; i++){
         chave[i]=INF; //Valor infinito
@@ -217,14 +295,7 @@ void primAVG(Grafo* g, int verticeInicial)
     
 }
 
-int menor_caminho()
+void menor_caminho(Grafo *grafo)
 {
-    printf("Calculei menor caminho - Dijkstra");
-    return 1;
-}
-
-int estatisticas()
-{
-    printf("Calculei estatísticas");
-    return 1;
+    printf("\nDijkstra ainda nao implementado.\n");
 }
