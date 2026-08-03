@@ -5,43 +5,39 @@
 
 //----->Funções Auxiliares: Conectividade<------//
 
-//OBS: Utilizando busca em profundidade (DFS) para verificar a conectividade do grafo
-
+// OBS: Utilizando busca em profundidade (DFS) para verificar a conectividade do grafo
 static void dfsConexo(Grafo* g, int u, bool* visitado, int* visitadosCount){
-    visitado[u]=true;
+    visitado[u] = true;
     (*visitadosCount)++;
 
-
     No* p = g->lista[u];
-      while(p!=NULL){
-        int v= p->destino;
-        if(visitado[v]==false){
-          dfsConexo(g, v, visitado, visitadosCount);
+    while(p != NULL){
+        int v = p->destino;
+        if(visitado[v] == false){
+            dfsConexo(g, v, visitado, visitadosCount);
         }
-    p= p->prox;
+        p = p->prox;
     }
 }
 
 static bool verificarConectividade(Grafo* g){
-    
-    if(g==NULL || g->V==0) return false;
+    if(g == NULL || g->V == 0) return false;
 
     bool* visitado = (bool*) calloc(g->V, sizeof(bool));
-    int visitadosCount=0;
+    int visitadosCount = 0;
 
-    //Inicia a busca DFS a partir do véritice O
+    // Inicia a busca DFS a partir do vértice 0
     dfsConexo(g, 0, visitado, &visitadosCount);
 
     free(visitado);
 
-    //Se a busca alcançar todos os vértices, o grafo é conexo 
+    // Se a busca alcançar todos os vértices, o grafo é conexo 
     return visitadosCount == g->V;
 }
 
 //----->Funções Auxiliares: Detecção de Ciclos<------//
 
-//Ciclo para Grafo não Direcionado (Usa o nó Pai)
-
+// Ciclo para Grafo não Direcionado (Usa o nó Pai)
 static bool dfsCicloNaoDirecionado(Grafo *g, int u, int pai, bool* visitado){
     visitado[u] = true;
 
@@ -60,9 +56,8 @@ static bool dfsCicloNaoDirecionado(Grafo *g, int u, int pai, bool* visitado){
     return false;
 }
 
-//Ciclo para Grafo Direcionado(usa pilha de recursão em 3 estados)
-//estado: 0 = não visitado, 1 = visitando, 2 = visitado
-
+// Ciclo para Grafo Direcionado (usa pilha de recursão em 3 estados)
+// estado: 0 = não visitado, 1 = visitando, 2 = visitado
 static bool dfsCicloDirecionado(Grafo* g, int u, int* estado){
     estado[u] = 1;
 
@@ -120,58 +115,92 @@ static bool verificarCiclos(Grafo* g, bool ehDirecionado){
     return false;
 }
 
-//Função Principal para calcular as estatísticas do grafo
-EstatisticasGrafo calcularEstatisticas(Grafo* g, bool ehDirecionado){
-    EstatisticasGrafo est= {0};
+//----->Funções Auxiliares: Detecção de Direcionamento<------//
 
-    if (g==NULL|| g->V==0) return est;
+static bool possuiAresta(Grafo* g, int u, int v, int peso) {
+    if (g == NULL || g->lista[u] == NULL) return false;
+    
+    No* p = g->lista[u];
+    while (p != NULL) {
+        if (p->destino == v && p->peso == peso) {
+            return true;
+        }
+        p = p->prox;
+    }
+    return false;
+}
 
-    //1. número de vértices e arestas
-    est.numVertices=g->V;
-    est.numArestas=g->A;
-    est.ehDirecionado=ehDirecionado;
+bool detectarSeDirecionado(Grafo* g) {
+    if (g == NULL || g->V == 0) return false;
 
-    //2. Grau de cada vértice
-    est.graus=(int*) calloc(g->V, sizeof(int));
-    for(int u=0; u<g->V; u++){
-        No* p=g->lista[u];
-        while(p!=NULL){
-            est.graus[u]++;
-            p=p->prox;
+    for (int u = 0; u < g->V; u++) {
+        No* p = g->lista[u];
+        while (p != NULL) {
+            int v = p->destino;
+            int peso = p->peso;
+
+            // Se existe a aresta (u -> v), checa se existe a aresta simétrica (v -> u)
+            if (!possuiAresta(g, v, u, peso)) {
+                return true; // Falta pelo menos uma volta simétrica = É Direcionado!
+            }
+            p = p->prox;
         }
     }
 
-    //3. Verificadno se grafo é conexo
-    est.ehConexo=verificarConectividade(g);
+    return false; // Todas as arestas têm ida e volta idênticas = Não Direcionado
+}
 
-    //4. Verificando se grafo tem ciclos
-    est.temCiclos=verificarCiclos(g, ehDirecionado);
+//----->Função Principal para calcular as estatísticas do grafo<------//
 
-    //5.Densidade do grafo
-    if(g->V>1){
-        if(ehDirecionado){
-            est.densidade=(float)g->A/(g->V*(g->V-1));
+EstatisticasGrafo calcularEstatisticas(Grafo* g, bool ehDirecionado){
+    EstatisticasGrafo est = {0};
 
-        }else{
-            est.densidade=(float)(2*g->A)/(g->V*(g->V-1));
+    if (g == NULL || g->V == 0) return est;
+
+    // 1. Número de vértices e arestas
+    est.numVertices = g->V;
+    est.numArestas = g->A;
+    est.ehDirecionado = ehDirecionado;
+
+    // 2. Grau de cada vértice
+    est.graus = (int*) calloc(g->V, sizeof(int));
+    for(int u = 0; u < g->V; u++){
+        No* p = g->lista[u];
+        while(p != NULL){
+            est.graus[u]++;
+            p = p->prox;
         }
-    }else{
-        est.densidade=0.0f;
+    }
+
+    // 3. Verificando se grafo é conexo
+    est.ehConexo = verificarConectividade(g);
+
+    // 4. Verificando se grafo tem ciclos
+    est.temCiclos = verificarCiclos(g, ehDirecionado);
+
+    // 5. Densidade do grafo
+    if(g->V > 1){
+        if(ehDirecionado){
+            est.densidade = (float)g->A / (g->V * (g->V - 1));
+        } else {
+            est.densidade = (float)(2 * g->A) / (g->V * (g->V - 1));
+        }
+    } else {
+        est.densidade = 0.0f;
     }   
     return est;
 }
 
-//Libera o vetor de graus alocado dinamicamente
-
+// Libera o vetor de graus alocado dinamicamente
 void liberarEstatisticas(EstatisticasGrafo* est){
-    if(est!=NULL && est->graus !=NULL){
+    if(est != NULL && est->graus != NULL){
         free(est->graus);
-        est->graus=NULL;
+        est->graus = NULL;
     }
 }
 
 void exibirRelatorioEstatisticas(Grafo* g, bool ehDirecionado){
-    if (g==NULL){
+    if (g == NULL){
         printf("Grafo nulo. Nao e possivel calcular estatisticas.\n");
         return;
     }
@@ -187,10 +216,10 @@ void exibirRelatorioEstatisticas(Grafo* g, bool ehDirecionado){
     printf("Grafo eh direcionado? %s\n", est.ehDirecionado ? "Sim" : "Nao");
     printf("Grafo eh conexo? %s\n", est.ehConexo ? "Sim" : "Nao");
     printf("Grafo tem ciclos? %s\n", est.temCiclos ? "Sim" : "Nao");
-    printf("Densidade do grafo: %.4f %.4f\n", est.densidade, est.densidade*100);
+    printf("Densidade do grafo: %.4f (%.2f%%)\n", est.densidade, est.densidade * 100);
     printf("-----------------------------------------------\n");
     printf("Grau de cada vertice:\n");
-    for (int i=0; i< est.numVertices; i++){
+    for (int i = 0; i < est.numVertices; i++){
         printf("Vertice %d: Grau = %d\n", i, est.graus[i]);
     }
     printf("-----------------------------------------------\n");
