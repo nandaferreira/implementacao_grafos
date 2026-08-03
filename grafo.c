@@ -390,50 +390,50 @@ void primAVG(Grafo* g, int verticeInicial)
 }
 
 // Função auxiliar: encontra o vértice não visitado com menor distância
-int procuraMenorDistancia(int* dist, bool* visitado, int V) {
-    int menor = INT_MAX;
-    int indice = -1;
+int procuraMenorDistancia(int* dist, bool* visitado, int V) { // Recebe vetor de distancias, vetor de visitados e n° de vertices do grafo
+    int menor = INT_MAX; // menor = infinito
+    int indice = -1; // indice do vertice de menor dist.
 
-    for (int i = 0; i < V; i++) {
-        if (!visitado[i] && dist[i] < menor) {
-            menor = dist[i];
-            indice = i;
+    for (int i = 0; i < V; i++) { // percorre vertices, peocura de menor dist.
+        if (!visitado[i] && dist[i] < menor) { 
+            menor = dist[i]; // atualiza menor dist. encontrada para distancia do vertice
+            indice = i; // guarda i como melhor candidato ate o momento
         }
     }
     return indice;
 }
 
 // Dijkstra usando lista de adjacência
-int* menor_caminho(Grafo *grafo, int s, int* pai){
+int* menor_caminho(Grafo *grafo, int s, int* pai){ // Recebe grafo, vertice de origem, vetor pai, retorna vetor com as menores distancias da origem ate cada vertice
     int V = grafo->V;
-    int* dist = (int*)malloc(V * sizeof(int));
-    bool* visitado = (bool*)malloc(V * sizeof(bool));
+    int* dist = (int*)malloc(V * sizeof(int)); // aloca vetor de distancia
+    bool* visitado = (bool*)malloc(V * sizeof(bool)); // aloca vetor p/ marcar vertices visitados
 
-    for (int i = 0; i < V; i++) {
-        dist[i] = INT_MAX;
-        visitado[i] = false;
-        pai[i] = -1;
+    for (int i = 0; i < V; i++) { // loop para inicializar vertices
+        dist[i] = INT_MAX; // dist = infinito
+        visitado[i] = false; // nenhum vertice visitado
+        pai[i] = -1; // sem pai
     }
-    dist[s] = 0;
+    dist[s] = 0; // dist. de unm vertice a ele mesmo é sempre 0
 
-    int cont = V;
+    int cont = V; // contador de quantos vertices faltam ser visitados
     while (cont > 0) {
-        int vert = procuraMenorDistancia(dist, visitado, V);
+        int vert = procuraMenorDistancia(dist, visitado, V); // busca entre vertices nao visitados a menor distancia - greedy vertex
         if (vert == -1) break; // não há mais vértices alcançáveis
 
         visitado[vert] = true;
         cont--;
 
-        No* atual = grafo->lista[vert];
-        while (atual != NULL) {
+        No* atual = grafo->lista[vert]; // pega inicio lista de adjacencia do vertice escolhido
+        while (atual != NULL) { // percorre vizinhos
             int ind = atual->destino;
             int peso = atual->peso;
 
-            if (!visitado[ind] && dist[vert] != INT_MAX && dist[vert] + peso < dist[ind]) {
+            if (!visitado[ind] && dist[vert] != INT_MAX && dist[vert] + peso < dist[ind]) { // Relaxamento
                 dist[ind] = dist[vert] + peso;
                 pai[ind] = vert;
             }
-            atual = atual->prox;
+            atual = atual->prox; // avança p/ prox  nó da lista de adjacencia (vizinho de vert)
         }
     }
 
