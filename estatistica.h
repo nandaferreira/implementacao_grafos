@@ -1,15 +1,11 @@
-
 #ifndef ESTATISTICA_H
 #define ESTATISTICA_H
 
 #include "grafo.h"
-#include "estatistica.h"
 #include <stdbool.h>
 
-//Estrutura para agrupar as métricas das Estatísticas do grafo
-
-typedef struct{
-
+// Estrutura para agrupar as métricas das Estatísticas do grafo
+typedef struct {
     int numVertices;
     int numArestas;
     int* graus;
@@ -19,6 +15,13 @@ typedef struct{
     float densidade;
 } EstatisticasGrafo;
 
+// Protótipos das funções
+bool detectarSeDirecionado(Grafo* g);
+EstatisticasGrafo calcularEstatisticas(Grafo* grafo, bool ehDirecionado);
+void exibirRelatorioEstatisticas(Grafo* g, bool ehDirecionado);
+void liberarEstatisticas(EstatisticasGrafo* est);
+
+#endif
 //Protótipos das funções 
 EstatisticasGrafo calcularEstatisticas(Grafo* grafo, bool ehDirecionado);
 void exibirRelatorioEstatisticas(Grafo* g, bool ehDirecionado);
