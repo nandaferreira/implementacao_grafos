@@ -243,53 +243,74 @@ void mostra_grafo(Grafo* grafo) {
 
 
 int ordenacao_topologica(Grafo* grafo) {
+    // Verifica se o grafo foi carregado
     if (grafo == NULL) {
         printf("\n[ERRO] Nenhum grafo carregado!\n");
         return 0;
     }
 
-    int V = grafo->V;
-    int *cor = (int*)calloc(V, sizeof(int)); // 0=branco, 1=cinza, 2=preto
-    int *pilha = (int*)malloc(V * sizeof(int));
-    int topo = 0;
-    int *ordem = (int*)malloc(V * sizeof(int));
-    int idx = V - 1;
-    int temCiclo = 0;
+    int V = grafo->V;  // Número de vértices
+// Cores: 0 = branco (não visitado), 1 = cinza (em processamento), 2 = preto (finalizado)
+    int *cor = (int*)calloc(V, sizeof(int));
 
-    // DFS recursiva para ordenação topológica
+    // 'ordem' armazenará a ordenação topológica; 'idx' controla a posição de inserção (do fim para o início)
+    int *ordem = (int*)malloc(V * sizeof(int));
+    int idx = V - 1;   // Começa pelo último índice, pois os vértices são inseridos quando finalizam
+
+    int temCiclo = 0;  // Flag que indica se foi encontrado um ciclo
+
+    // Função DFS recursiva interna que explora o vértice 'v'
     void dfs(int v) {
-        cor[v] = 1; // cinza – em processamento
+        cor[v] = 1;  // Marca como cinza (em processamento)
+
+        // Percorre todos os vizinhos de v
         No* atual = grafo->lista[v];
         while (atual != NULL) {
             int vizinho = atual->destino;
+
+            // Se o vizinho está cinza, temos uma aresta de volta para um vértice em processamento -> ciclo!
             if (cor[vizinho] == 1) {
-                temCiclo = 1; // ciclo detectado
-            } else if (cor[vizinho] == 0) {
+                temCiclo = 1;  // Sinaliza ciclo, mas continua para tentar completar a ordenação (não para imediatamente)
+            }
+            // Se o vizinho está branco, visita-o recursivamente
+            else if (cor[vizinho] == 0) {
                 dfs(vizinho);
             }
+            // Se já está preto, nada a fazer
+
             atual = atual->prox;
         }
-        cor[v] = 2; // preto – finalizado
-        ordem[idx--] = v; // insere no final da ordem
+
+        // Finalizou a exploração de v: marca como preto e insere na ordem (do final para o início)
+        cor[v] = 2;
+        ordem[idx--] = v;  // Coloca v na posição atual e decrementa o índice
     }
 
+    // Inicia a DFS a partir de cada vértice ainda não visitado (branco)
     for (int i = 0; i < V; i++) {
-        if (cor[i] == 0) dfs(i);
+        if (cor[i] == 0) {
+            dfs(i);
+        }
     }
 
+    // Após a DFS, verifica se houve ciclo
     if (temCiclo) {
         printf("\n[ERRO] O grafo possui ciclo! Nao e um DAG.\n");
-        free(cor); free(pilha); free(ordem);
+        free(cor);
+        free(ordem);
         return 0;
     }
 
+    // Se não houve ciclo, imprime a ordem topológica obtida
     printf("\n=== ORDENACAO TOPOLOGICA ===\n");
     printf("Ordem: ");
     for (int i = 0; i < V; i++) {
         printf("%d%s", ordem[i], (i == V-1) ? "\n" : " -> ");
     }
 
-    free(cor); free(pilha); free(ordem);
+    // Libera a memória alocada
+    free(cor);
+    free(ordem);
     return 1;
 }
 
