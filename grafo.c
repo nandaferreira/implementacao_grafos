@@ -478,6 +478,7 @@ void dijkstraMenu(Grafo* grafo) {
     }
     while (getchar() != '\n'); // limpa buffer
 
+    // Aloca vetor pai, serve como GPS, guarda passos dados
     int* pai = (int*)malloc(V * sizeof(int));
     int* distancias = menor_caminho(grafo, origem, pai);
 
