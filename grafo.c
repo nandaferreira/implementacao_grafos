@@ -10,6 +10,7 @@
 
 void adicionar_aresta(Grafo *grafo, int origem, int destino, int peso)
 {
+    //validação de entrada
     if (grafo == NULL ||
         origem < 0 || origem >= grafo->V ||
         destino < 0 || destino >= grafo->V)
@@ -18,36 +19,41 @@ void adicionar_aresta(Grafo *grafo, int origem, int destino, int peso)
         return;
     }
 
+    //aloca espaço para o novo nó da lista de ajacência
     No *novo = (No *)malloc(sizeof(No));
 
+    //verifica se a alocação deu certo
     if (novo == NULL)
     {
         printf("Erro de memoria.\n");
         return;
     }
 
+    //caso sim
     novo->destino = destino;
     novo->peso = peso;
     novo->prox = NULL;
 
-    No **atual = &grafo->lista[origem];
+    No **atual = &grafo->lista[origem]; //insere os valores de entrada na lista do vértice de origem, mantendo a ordem por destino 
 
-    while (*atual != NULL && (*atual)->destino < destino)
+    while (*atual != NULL && (*atual)->destino < destino) //cada nó inserido de forma ordenada ascendente, do menor para o maior
         atual = &((*atual)->prox);
 
     novo->prox = *atual;
     *atual = novo;
 }
 
+//leitura e construção do grafo a partir do arquivo
 Grafo* carrega_arquivo(char* nome_arquivo) {
-    FILE *fptr = fopen(nome_arquivo, "r");
-    if (fptr == NULL) {
+    FILE *fptr = fopen(nome_arquivo, "r"); //abre na função read
+    if (fptr == NULL) { //verifica se existe
         printf("\nErro: Arquivo '%s' nao encontrado.\n\n", nome_arquivo);
         return NULL;
     }
 
     printf("\nArquivo carregado com sucesso.\n");
 
+    //lê a primeira linha do arquivo
     int V, A;
     if (fscanf(fptr, "%d %d", &V, &A) != 2) {
         printf("Erro: formato do arquivo invalido\n");
@@ -55,6 +61,7 @@ Grafo* carrega_arquivo(char* nome_arquivo) {
         return NULL;
     }
 
+    //aloca espaço pra estrutura
     Grafo* grafo = (Grafo*) malloc(sizeof(Grafo));
     if (grafo == NULL) {
         fclose(fptr);
@@ -64,6 +71,7 @@ Grafo* carrega_arquivo(char* nome_arquivo) {
     grafo->V = V;
     grafo->A = A;
     
+    //inicializia o vetor de lista como nullo, ou seja, de inicio nenhum vertiec tem vizinhos até que insira as arestas
     grafo->lista = (No**) calloc(V, sizeof(No*));
     if (grafo->lista == NULL) {
         free(grafo);
@@ -71,6 +79,8 @@ Grafo* carrega_arquivo(char* nome_arquivo) {
         return NULL;
     }
 
+    //adicionar arestas
+    //verifica se a entrada de aresta é valida. se não, fehca arquivo e libera a estrutura
     int origem, destino, peso;
     for (int i = 0; i < A; i++) {
         if (fscanf(fptr, "%d %d %d", &origem, &destino, &peso) != 3) {
@@ -86,63 +96,28 @@ Grafo* carrega_arquivo(char* nome_arquivo) {
     return grafo;
 }
 
-void libera_grafo(Grafo* grafo) {
-    if (grafo == NULL) return;
-
-    // Libera cada lista de adjacência
-    for (int i = 0; i < grafo->V; i++) {
-        No* atual = grafo->lista[i];
-        while (atual != NULL) {
-            No* temp = atual;
-            atual = atual->prox;
-            free(temp);
-        }
-    }
-    
-    // Libera o array de listas e o grafo
-    free(grafo->lista);
-    free(grafo);
-}
-
-
-void mostra_grafo(Grafo* grafo) {
-    if (grafo == NULL) {
-        printf("Grafo vazio!\n");
-        return;
-    }
-
-    printf("\n=== GRAFO ===\n");
-    printf("Vertices: %d, Arestas: %d\n", grafo->V, grafo->A);
-    printf("Lista de Adjacencia:\n");
-
-    for (int i = 0; i < grafo->V; i++) {
-        printf("Vertice %d: ", i);
-        No* atual = grafo->lista[i];
-        if (atual == NULL) {
-            printf("(sem arestas)");
-        }
-        while (atual != NULL) {
-            printf("-> [%d, peso:%d] ", atual->destino, atual->peso);
-            atual = atual->prox;
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
+//essa é a função que realiza a busca em profundidade (DFS) recursiva
+//recebe o grafo, o vertice inicial e um array com o numero de vertices do grafo
+//esse array é usado para marcar a ordem em que cada vértice será visitado
+//a função marca todos os vértices como não visitados e em seguida chama a busca recursiva para o vertice inicial 
 
 static void dfs_visita(Grafo *grafo, int vertice, int *visitado)
 {
-    visitado[vertice] = 1;
+    visitado[vertice] = 1; //marca o vertice como visitado
     printf("%d ", vertice);
 
+    //percorre todos os vizinhos do vertice atual
     for (No *atual = grafo->lista[vertice]; atual != NULL; atual = atual->prox) {
         int vizinho = atual->destino;
         if (!visitado[vizinho]) {
-            dfs_visita(grafo, vizinho, visitado);
+            dfs_visita(grafo, vizinho, visitado); //para cada vizinho nao visitado, chama recursivamente a função para visitar esse vizinho
+            //a chamada acontece até que todos os vizinhos do vértice atual tenham sido visitados
         }
     }
-}
+}   
 
+//essa função que inicializa o processo de busca em profundidade (DFS) para todos os vértices do grafo
+//somente inicializa a busca caso o vertice nao tenha sido visitado e chama a função dfs_visita que realmente faz o calculo da busca
 void busca_profundidade(Grafo *grafo)
 {
     if (grafo == NULL) {
@@ -174,7 +149,7 @@ void busca_largura(Grafo *grafo)
         return;
     }
 
-    int *visitado = (int *)calloc(grafo->V, sizeof(int));
+    int *visitado = (int *)calloc(grafo->V, sizeof(int)); // inicializa o vertice com 0 (nao visitado). impede que ele seja enfileirado 2 vezes
     if (visitado == NULL) {
         printf("\n[ERRO] Falha ao alocar memoria para a busca.\n");
         return;
@@ -189,19 +164,22 @@ void busca_largura(Grafo *grafo)
 
     printf("\nBusca em largura (BFS): ");
 
+    //percorre todos os vertices do grafo
     for (int inicio = 0; inicio < grafo->V; inicio++) {
         if (visitado[inicio]) {
-            continue;
+            continue; //se ja foi visitado, passa proximo vertice
         }
 
-        int frente = 0, tras = 0;
-        fila[tras++] = inicio;
+        int frente = 0, tras = 0; //a fila é reiniciada a cada vertice novo
+        fila[tras++] = inicio; //vertice de inicio é enfileirado e marcado imediatamente como visitado
         visitado[inicio] = 1;
 
-        while (frente < tras) {
-            int vertice = fila[frente++];
-            printf("%d ", vertice);
+        //enquanto tiver vertices na fila
+        while (frente < tras) { 
+            int vertice = fila[frente++]; //tira o vértice mais antigo da fila
+            printf("%d ", vertice); //imprime do mais antigo ao mais recente (na ordem que foram enfileirados)
 
+            //for para percorrer a lista de adjacência do vértice atual e enfileirar os vizinhos não visitados
             for (No *atual = grafo->lista[vertice]; atual != NULL; atual = atual->prox) {
                 int vizinho = atual->destino;
                 if (!visitado[vizinho]) {
@@ -214,9 +192,55 @@ void busca_largura(Grafo *grafo)
 
     printf("\n");
 
+    //libera as estruturas auxiliares da busca 
     free(fila);
     free(visitado);
 }
+
+void libera_grafo(Grafo* grafo) {
+    if (grafo == NULL) return;
+
+    // Libera cada lista de adjacência
+    for (int i = 0; i < grafo->V; i++) {
+        No* atual = grafo->lista[i];
+        while (atual != NULL) {
+            No* temp = atual;
+            atual = atual->prox;
+            free(temp);
+        }
+    }
+    
+    // Libera o array de listas e o grafo
+    free(grafo->lista);
+    free(grafo);
+}
+
+void mostra_grafo(Grafo* grafo) {
+    if (grafo == NULL) {
+        printf("Grafo vazio!\n");
+        return;
+    }
+
+    printf("\n=== GRAFO ===\n");
+    printf("Vertices: %d, Arestas: %d\n", grafo->V, grafo->A);
+    printf("Lista de Adjacencia:\n");
+
+    for (int i = 0; i < grafo->V; i++) {
+        printf("Vertice %d: ", i);
+        No* atual = grafo->lista[i];
+        if (atual == NULL) {
+            printf("(sem arestas)");
+        }
+        while (atual != NULL) {
+            printf("-> [%d, peso:%d] ", atual->destino, atual->peso);
+            atual = atual->prox;
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+
 
 int ordenacao_topologica(Grafo* grafo) {
     if (grafo == NULL) {

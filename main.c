@@ -46,13 +46,12 @@ int main()
                 grafo = carrega_arquivo(arquivo);
                 if (grafo != NULL) {
                     // Por padrão, assume-se não direcionado. 
-                    // Se quiser, pode perguntar ao usuário ou detectar pelo arquivo.
                     ehDirecionado = false;
                 }
                 break;
             }
 
-            case 2: {
+            case 2: { //mostra lista de adjacência
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado! Primeiro escolha a opcao 1.\n");
                 } else {
@@ -61,18 +60,16 @@ int main()
                 break;
             }
 
-            case 3: {
+            case 3: { //busca em profundidade (DFS)
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado!\n");
                 } else {
-                    // A função busca_profundidade() deve ser ajustada para receber o grafo.
-                    // Se a assinatura for diferente, adapte aqui.
                     busca_profundidade(grafo);
                 }
                 break;
             }
 
-            case 4: {
+            case 4: { //busca em largura (BFS)
                 if (grafo == NULL) {
                     printf("\n[ERRO] Nenhum grafo carregado!\n");
                 } else {
