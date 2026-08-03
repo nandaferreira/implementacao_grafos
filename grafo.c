@@ -243,53 +243,74 @@ void mostra_grafo(Grafo* grafo) {
 
 
 int ordenacao_topologica(Grafo* grafo) {
+    // Verifica se o grafo foi carregado
     if (grafo == NULL) {
         printf("\n[ERRO] Nenhum grafo carregado!\n");
         return 0;
     }
 
-    int V = grafo->V;
-    int *cor = (int*)calloc(V, sizeof(int)); // 0=branco, 1=cinza, 2=preto
-    int *pilha = (int*)malloc(V * sizeof(int));
-    int topo = 0;
-    int *ordem = (int*)malloc(V * sizeof(int));
-    int idx = V - 1;
-    int temCiclo = 0;
+    int V = grafo->V;  // Número de vértices
+// Cores: 0 = branco (não visitado), 1 = cinza (em processamento), 2 = preto (finalizado)
+    int *cor = (int*)calloc(V, sizeof(int));
 
-    // DFS recursiva para ordenação topológica
+    // 'ordem' armazenará a ordenação topológica; 'idx' controla a posição de inserção (do fim para o início)
+    int *ordem = (int*)malloc(V * sizeof(int));
+    int idx = V - 1;   // Começa pelo último índice, pois os vértices são inseridos quando finalizam
+
+    int temCiclo = 0;  // Flag que indica se foi encontrado um ciclo
+
+    // Função DFS recursiva interna que explora o vértice 'v'
     void dfs(int v) {
-        cor[v] = 1; // cinza – em processamento
+        cor[v] = 1;  // Marca como cinza (em processamento)
+
+        // Percorre todos os vizinhos de v
         No* atual = grafo->lista[v];
         while (atual != NULL) {
             int vizinho = atual->destino;
+
+            // Se o vizinho está cinza, temos uma aresta de volta para um vértice em processamento -> ciclo!
             if (cor[vizinho] == 1) {
-                temCiclo = 1; // ciclo detectado
-            } else if (cor[vizinho] == 0) {
+                temCiclo = 1;  // Sinaliza ciclo, mas continua para tentar completar a ordenação (não para imediatamente)
+            }
+            // Se o vizinho está branco, visita-o recursivamente
+            else if (cor[vizinho] == 0) {
                 dfs(vizinho);
             }
+            // Se já está preto, nada a fazer
+
             atual = atual->prox;
         }
-        cor[v] = 2; // preto – finalizado
-        ordem[idx--] = v; // insere no final da ordem
+
+        // Finalizou a exploração de v: marca como preto e insere na ordem (do final para o início)
+        cor[v] = 2;
+        ordem[idx--] = v;  // Coloca v na posição atual e decrementa o índice
     }
 
+    // Inicia a DFS a partir de cada vértice ainda não visitado (branco)
     for (int i = 0; i < V; i++) {
-        if (cor[i] == 0) dfs(i);
+        if (cor[i] == 0) {
+            dfs(i);
+        }
     }
 
+    // Após a DFS, verifica se houve ciclo
     if (temCiclo) {
         printf("\n[ERRO] O grafo possui ciclo! Nao e um DAG.\n");
-        free(cor); free(pilha); free(ordem);
+        free(cor);
+        free(ordem);
         return 0;
     }
 
+    // Se não houve ciclo, imprime a ordem topológica obtida
     printf("\n=== ORDENACAO TOPOLOGICA ===\n");
     printf("Ordem: ");
     for (int i = 0; i < V; i++) {
         printf("%d%s", ordem[i], (i == V-1) ? "\n" : " -> ");
     }
 
-    free(cor); free(pilha); free(ordem);
+    // Libera a memória alocada
+    free(cor);
+    free(ordem);
     return 1;
 }
 
@@ -390,50 +411,50 @@ void primAVG(Grafo* g, int verticeInicial)
 }
 
 // Função auxiliar: encontra o vértice não visitado com menor distância
-int procuraMenorDistancia(int* dist, bool* visitado, int V) {
-    int menor = INT_MAX;
-    int indice = -1;
+int procuraMenorDistancia(int* dist, bool* visitado, int V) { // Recebe vetor de distancias, vetor de visitados e n° de vertices do grafo
+    int menor = INT_MAX; // menor = infinito
+    int indice = -1; // indice do vertice de menor dist.
 
-    for (int i = 0; i < V; i++) {
-        if (!visitado[i] && dist[i] < menor) {
-            menor = dist[i];
-            indice = i;
+    for (int i = 0; i < V; i++) { // percorre vertices, peocura de menor dist.
+        if (!visitado[i] && dist[i] < menor) { 
+            menor = dist[i]; // atualiza menor dist. encontrada para distancia do vertice
+            indice = i; // guarda i como melhor candidato ate o momento
         }
     }
     return indice;
 }
 
 // Dijkstra usando lista de adjacência
-int* menor_caminho(Grafo *grafo, int s, int* pai){
+int* menor_caminho(Grafo *grafo, int s, int* pai){ // Recebe grafo, vertice de origem, vetor pai, retorna vetor com as menores distancias da origem ate cada vertice
     int V = grafo->V;
-    int* dist = (int*)malloc(V * sizeof(int));
-    bool* visitado = (bool*)malloc(V * sizeof(bool));
+    int* dist = (int*)malloc(V * sizeof(int)); // aloca vetor de distancia
+    bool* visitado = (bool*)malloc(V * sizeof(bool)); // aloca vetor p/ marcar vertices visitados
 
-    for (int i = 0; i < V; i++) {
-        dist[i] = INT_MAX;
-        visitado[i] = false;
-        pai[i] = -1;
+    for (int i = 0; i < V; i++) { // loop para inicializar vertices
+        dist[i] = INT_MAX; // dist = infinito
+        visitado[i] = false; // nenhum vertice visitado
+        pai[i] = -1; // sem pai
     }
-    dist[s] = 0;
+    dist[s] = 0; // dist. de unm vertice a ele mesmo é sempre 0
 
-    int cont = V;
+    int cont = V; // contador de quantos vertices faltam ser visitados
     while (cont > 0) {
-        int vert = procuraMenorDistancia(dist, visitado, V);
+        int vert = procuraMenorDistancia(dist, visitado, V); // busca entre vertices nao visitados a menor distancia - greedy vertex
         if (vert == -1) break; // não há mais vértices alcançáveis
 
         visitado[vert] = true;
         cont--;
 
-        No* atual = grafo->lista[vert];
-        while (atual != NULL) {
+        No* atual = grafo->lista[vert]; // pega inicio lista de adjacencia do vertice escolhido
+        while (atual != NULL) { // percorre vizinhos
             int ind = atual->destino;
             int peso = atual->peso;
 
-            if (!visitado[ind] && dist[vert] != INT_MAX && dist[vert] + peso < dist[ind]) {
+            if (!visitado[ind] && dist[vert] != INT_MAX && dist[vert] + peso < dist[ind]) { // Relaxamento
                 dist[ind] = dist[vert] + peso;
                 pai[ind] = vert;
             }
-            atual = atual->prox;
+            atual = atual->prox; // avança p/ prox  nó da lista de adjacencia (vizinho de vert)
         }
     }
 
@@ -478,6 +499,7 @@ void dijkstraMenu(Grafo* grafo) {
     }
     while (getchar() != '\n'); // limpa buffer
 
+    // Aloca vetor pai, serve como GPS, guarda passos dados
     int* pai = (int*)malloc(V * sizeof(int));
     int* distancias = menor_caminho(grafo, origem, pai);
 

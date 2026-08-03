@@ -391,27 +391,39 @@ void caminho_critico(Grafo* g) {
 
 // ============================================
 // FUNÇÃO: Gerar grafo aleatório para teste
+// OBJETIVO: Criar um grafo aleatório mas CONEXO para testes
+// PARÂMETROS: V = número de vértices, A = número de arestas
+// RETORNO: Ponteiro para o grafo criado
 // ============================================
 Grafo* gerarGrafoTeste(int V, int A) {
     printf("Gerando grafo com %d vertices e %d arestas...\n", V, A);
-    
+    // --- PASSO 1: Alocar memória para o grafo ---
     Grafo* grafo = (Grafo*)malloc(sizeof(Grafo));
     if (grafo == NULL) return NULL;
     
     grafo->V = V;
-    grafo->A = 0;
+    grafo->A = 0; // Inicia com 0 arestas, vamos adicionar depois
+
+    // Aloca o array de listas de adjacência
     grafo->lista = (No**)calloc(V, sizeof(No*));
     if (grafo->lista == NULL) {
         free(grafo);
         return NULL;
     }
     
+    // --- PASSO 2: Criar matriz de adjacência para controle ---
+    // POR QUE: Para evitar adicionar arestas duplicadas
+    // Usamos bool (true/false) para economizar memória
     bool** matriz = (bool**)calloc(V, sizeof(bool*));
     for (int i = 0; i < V; i++) {
         matriz[i] = (bool*)calloc(V, sizeof(bool));
     }
     
-    // Garante conexidade
+    // --- PASSO 3: GARANTIR QUE O GRAFO SEJA CONEXO ---
+    // POR QUE: Se o grafo não for conexo, alguns testes (como DFS)
+    // podem não visitar todos os vértices, distorcendo os resultados
+    // ESTRATÉGIA: Criar um caminho que passa por todos os vértices
+    // Vértice 0 → 1 → 2 → 3 → ... → V-1
     for (int i = 0; i < V - 1; i++) {
         int peso = (rand() % 20) + 1;
         adicionar_aresta(grafo, i, i + 1, peso);
@@ -420,12 +432,16 @@ Grafo* gerarGrafoTeste(int V, int A) {
         grafo->A++;
     }
     
-    // Adiciona arestas aleatórias
+    // --- PASSO 4: Adicionar arestas extras aleatórias ---
+    // POR QUE: Precisamos de um grafo com A arestas (não apenas V-1)
+    // Para grafos densos, muitas arestas serão adicionadas aqui
     int tentativas = 0;
     while (grafo->A < A && tentativas < A * 10) {
         int origem = rand() % V;
         int destino = rand() % V;
         
+        // Evita: (1) laços (vértice para si mesmo)
+        //        (2) arestas duplicadas
         if (origem == destino || matriz[origem][destino]) {
             tentativas++;
             continue;
@@ -436,9 +452,10 @@ Grafo* gerarGrafoTeste(int V, int A) {
         matriz[origem][destino] = true;
         matriz[destino][origem] = true;
         grafo->A++;
-        tentativas = 0;
+        tentativas = 0; // Reset após adicionar com sucesso
     }
     
+    // --- PASSO 5: Limpar matriz auxiliar ---
     for (int i = 0; i < V; i++) {
         free(matriz[i]);
     }
@@ -452,11 +469,14 @@ Grafo* gerarGrafoTeste(int V, int A) {
 // FUNÇÕES DE TESTE PARA CADA OPERAÇÃO
 // ============================================
 
+// ----------------------------------------------------------------
+// TESTE 1: Busca em Profundidade (DFS)
+// ----------------------------------------------------------------
 void executarTesteDFS(Grafo* grafo, int V) {
     printf("Executando DFS para todos os vertices...\n");
+    // MARCA O TEMPO ANTES DE EXECUTAR
     clock_t inicio = clock();
-    
-    // USA A VERSAO SILENCIOSA!
+    // Executa versão silenciosa
     executarDFSCompleta(grafo);
     
     clock_t fim = clock();
@@ -465,11 +485,13 @@ void executarTesteDFS(Grafo* grafo, int V) {
     printf("Media por vertice: %.6f segundos\n", tempo / V);
 }
 
+// ----------------------------------------------------------------
+// TESTE 2: Busca em Largura (BFS)
+// ----------------------------------------------------------------
 void executarTesteBFS(Grafo* grafo, int V) {
     printf("Executando BFS para todos os vertices...\n");
     clock_t inicio = clock();
     
-    // USA A VERSAO SILENCIOSA!
     executarBFSCompleta(grafo);
     
     clock_t fim = clock();
@@ -478,7 +500,11 @@ void executarTesteBFS(Grafo* grafo, int V) {
     printf("Media por vertice: %.6f segundos\n", tempo / V);
 }
 
-
+// ----------------------------------------------------------------
+// TESTE 3: Ordenação Topológica
+// ----------------------------------------------------------------
+// OBS: Só funciona em Grafos Acíclicos Direcionados (DAGs)
+// Se o grafo tiver ciclos, o resultado não será válido
 void executarTesteTopologica(Grafo* grafo, int V) {
     printf("Executando Ordenacao Topologica...\n");
     clock_t inicio = clock();
@@ -490,6 +516,11 @@ void executarTesteTopologica(Grafo* grafo, int V) {
     printf("Tempo Ordenacao Topologica: %.4f segundos\n", tempo);
 }
 
+// ----------------------------------------------------------------
+// TESTE 4: Detecção de Ciclos
+// ----------------------------------------------------------------
+// POR QUE ARMAZENAR O RESULTADO?: Evita que o compilador otimize
+// a chamada da função (se não usarmos o retorno, ele pode pular)
 void executarTesteCiclo(Grafo* grafo, int V) {
     printf("Executando Deteccao de Ciclos...\n");
     clock_t inicio = clock();
@@ -506,6 +537,11 @@ void executarTesteCiclo(Grafo* grafo, int V) {
     printf("Media por vertice: %.6f segundos\n", tempo / V);
 }
 
+// ----------------------------------------------------------------
+// TESTE 5: Caminho Crítico (PERT/CPM)
+// ----------------------------------------------------------------
+// OBJETIVO: Encontrar o caminho mais longo em um DAG
+// UTILIDADE: Gerenciamento de projetos (prazo mínimo para concluir)
 void executarTesteCaminhoCritico(Grafo* grafo, int V) {
     printf("Executando Caminho Critico...\n");
     clock_t inicio = clock();
@@ -519,12 +555,17 @@ void executarTesteCaminhoCritico(Grafo* grafo, int V) {
 
 // ============================================
 // FUNÇÕES SILENCIOSAS PARA TESTE DE DESEMPENHO
+// - Para medir o tempo REAL do algoritmo, removemos todos os prints
+// - PALAVRA-CHAVE 'static': Função visível APENAS neste arquivo
 // ============================================
 
+
 // DFS silenciosa (sem prints)
+// COMPLEXIDADE: O(V + A) - tempo proporcional a vértices + arestas
 static void dfsSilencioso(Grafo* grafo, int vertice, bool* visitado) {
     visitado[vertice] = true;
     
+    // Percorre todos os vizinhos do vértice atual
     No* atual = grafo->lista[vertice];
     while (atual != NULL) {
         int vizinho = atual->destino;
@@ -533,26 +574,31 @@ static void dfsSilencioso(Grafo* grafo, int vertice, bool* visitado) {
         }
         atual = atual->prox;
     }
+    // NOTA: DFS recursiva pode causar estouro de pilha em grafos muito grandes
+    // Para 5000 vértices, ainda é seguro
 }
 
 // BFS silenciosa (sem prints)
+// COMPLEXIDADE: O(V + A) - mesma complexidade que DFS
+// DIFERENÇA: Usa fila (FIFO) em vez de recursão/pilha
 static void bfsSilencioso(Grafo* grafo, int inicio, bool* visitado) {
     int V = grafo->V;
+    // Aloca fila dinamicamente (tamanho = V)
     int* fila = (int*)malloc(V * sizeof(int));
     int frente = 0, tras = 0;
     
     visitado[inicio] = true;
-    fila[tras++] = inicio;
+    fila[tras++] = inicio; // Enfileira o vértice inicial
     
     while (frente < tras) {
-        int vertice = fila[frente++];
+        int vertice = fila[frente++]; // Desenfileira
         
         No* atual = grafo->lista[vertice];
         while (atual != NULL) {
             int vizinho = atual->destino;
             if (!visitado[vizinho]) {
                 visitado[vizinho] = true;
-                fila[tras++] = vizinho;
+                fila[tras++] = vizinho; // Enfileira o vizinho
             }
             atual = atual->prox;
         }
@@ -590,6 +636,8 @@ void executarBFSCompleta(Grafo* grafo) {
 }
 
 // Versão silenciosa do Kosaraju (sem prints)
+// ESTRATÉGIA: 2 passagens (grafo original + grafo transposto)
+// COMPLEXIDADE: O(V + A) - duas vezes mais lento que DFS simples
 static void kosarajuSilencioso(Grafo* g) {
     if (g == NULL) return;
     
@@ -670,7 +718,12 @@ void executarTesteKosarajuSilencioso(Grafo* grafo, int V) {
 
 // ============================================
 // FUNÇÃO PRINCIPAL: Menu de Teste de Desempenho
-// ============================================
+// ================================================================
+// OBJETIVO: Interface interativa para o usuário:
+// 1. Escolher o TAMANHO do grafo
+// 2. Escolher qual ALGORITMO testar
+// 3. Ver os resultados em tempo real
+// ================================================================
 void testarDesempenho() {
     printf("\n+------------------------------------------------------------------+\n");
     printf("|        TESTE DE DESEMPENHO COM GRAFOS DE 1000+ VERTICES            |\n");
